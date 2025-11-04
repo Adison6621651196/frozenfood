@@ -35,7 +35,13 @@ export class ForgotPasswordComponent {
     private http: HttpClient,
     private router: Router,
     private toastService: ToastService
-  ) {}
+  ) {
+    // Wake up Render server on component load
+    this.http.get(`${this.apiUrl}/categories`).subscribe({
+      next: () => logger.info('Server is awake'),
+      error: () => logger.warn('Server wake up failed')
+    });
+  }
 
   // Step 1: ส่ง OTP ไปยังอีเมล
   sendOTP(): void {
@@ -48,11 +54,11 @@ export class ForgotPasswordComponent {
     logger.info('Sending OTP to:', this.email);
     logger.info('API URL:', `${this.apiUrl}/forgot-password/send-otp`);
 
-    // Set timeout 15 seconds
+    // Set timeout 60 seconds (Render free tier needs time to wake up)
     const timeoutId = setTimeout(() => {
       this.isLoading = false;
-      this.toastService.error('การเชื่อมต่อใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้ง');
-    }, 15000);
+      this.toastService.error('การเชื่อมต่อใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้ง (Server อาจกำลังตื่น)');
+    }, 60000);
 
     this.http.post<any>(`${this.apiUrl}/forgot-password/send-otp`, {
       email: this.email
