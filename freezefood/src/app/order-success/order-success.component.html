@@ -1,0 +1,27 @@
+<div class="success-container">
+  <div class="success-card">
+    <div class="success-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h1 class="success-title">สั่งซื้อสำเร็จ!</h1>
+    <div class="order-info">
+      <p class="success-message">ขอบคุณที่ใช้บริการ</p>
+      <div class="order-details">
+        <div class="detail-row">
+          <span class="label">หมายเลขออเดอร์:</span>
+          <span class="value">{{ orderId }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="success-actions">
+  <button class="btn btn-primary" (click)="goToTracking()">
+        <i class="fas fa-search"></i>
+        ตรวจสอบสถานะ
+      </button>
+  <button class="btn btn-secondary" (click)="goToHome()">
+        <i class="fas fa-home"></i>
+        กลับหน้าแรก
+      </button>
+    </div>
+  </div>
+</div>

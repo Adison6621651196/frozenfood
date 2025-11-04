@@ -1,0 +1,25 @@
+<div class="history-page">
+  <div class="container">
+    <h2 class="page-title">ประวัติการสั่งซื้อ</h2>
+
+    <div *ngIf="loading" class="state muted">กำลังโหลด...</div>
+    <div *ngIf="error" class="state error">{{ error }}</div>
+
+    <div *ngIf="!loading && !error">
+      <div *ngIf="orders.length === 0" class="empty">
+        ยังไม่มีประวัติการสั่งซื้อ
+      </div>
+
+      <div class="orders" *ngIf="orders.length > 0">
+        <div class="order" *ngFor="let o of orders">
+          <div class="row">
+            <div class="cell id">#{{ o.order_id }}</div>
+            <div class="cell date">{{ (o.order_date || o.created_at) | date:'dd/MM/yyyy' }}</div>
+            <div class="cell status">{{ statusText(o.status) }}</div>
+            <div class="cell amount">{{ o.total_amount || 0 | number }} บาท</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

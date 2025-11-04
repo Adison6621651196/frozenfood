@@ -1,0 +1,257 @@
+<div class="profile-page">
+    <div class="profile-content">
+      <div class="left-column">
+        <div class="profile-card">
+        <h3>
+          <i class="fas fa-user"></i>
+          ข้อมูลส่วนตัว
+        </h3>
+        <form (ngSubmit)="updateProfile()" #profileForm="ngForm">
+          <div class="form-group">
+            <label class="form-label">ชื่อผู้ใช้</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              [(ngModel)]="userProfile.username" 
+              name="username"
+              autocomplete="name"
+              required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">อีเมล</label>
+            <input 
+              type="email" 
+              class="form-input" 
+              [(ngModel)]="userProfile.email" 
+              name="email"
+              autocomplete="email"
+              required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">เบอร์โทรศัพท์</label>
+            <input 
+              type="tel" 
+              class="form-input" 
+              [(ngModel)]="userProfile.phone" 
+              name="phone"
+              inputmode="tel"
+              pattern="[0-9]*"
+              maxlength="10"
+              (keypress)="onlyNumbers($event)"
+              autocomplete="tel"
+              placeholder="0812345678">
+          </div>
+          
+          <!-- แสดงที่อยู่เดิม -->
+          <div *ngIf="userProfile.address" class="form-group" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+            <label class="form-label" style="color: #667eea; font-weight: 600; margin-bottom: 8px;">
+              <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+              ที่อยู่ปัจจุบัน
+            </label>
+            <div style="color: #333; line-height: 1.6;">
+              {{ userProfile.address }}
+            </div>
+            <small style="color: #999; margin-top: 8px; display: block;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i>
+              หากต้องการแก้ไขที่อยู่ กรุณากรอกข้อมูลในช่องด้านล่าง
+            </small>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">บ้านเลขที่</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              [(ngModel)]="userProfile.houseNumber" 
+              name="houseNumber"
+              placeholder="เลขที่บ้าน"
+              required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">หมู่</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              [(ngModel)]="userProfile.moo" 
+              name="moo"
+              placeholder="หมู่ที่ (ถ้ามี)">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">ซอย</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              [(ngModel)]="userProfile.soi" 
+              name="soi"
+              placeholder="ซอย (ถ้ามี)">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">ถนน</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              [(ngModel)]="userProfile.road" 
+              name="road"
+              placeholder="ถนน (ถ้ามี)">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">จังหวัด <span style="color: red;">*</span></label>
+            <select 
+              class="form-input" 
+              [(ngModel)]="userProfile.province" 
+              name="province"
+              (change)="onProvinceChange()"
+              required>
+              <option value="">เลือกจังหวัด</option>
+              <option *ngFor="let province of provinces" [value]="province.id">
+                {{ province.name_th }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">อำเภอ/เขต <span style="color: red;">*</span></label>
+            <select 
+              class="form-input" 
+              [(ngModel)]="userProfile.district" 
+              name="district"
+              (change)="onDistrictChange()"
+              [disabled]="!userProfile.province"
+              required>
+              <option value="">เลือกอำเภอ/เขต</option>
+              <option *ngFor="let district of districts" [value]="district.id">
+                {{ district.name_th }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">ตำบล/แขวง <span style="color: red;">*</span></label>
+            <select 
+              class="form-input" 
+              [(ngModel)]="userProfile.subDistrict" 
+              name="subDistrict"
+              (change)="onSubDistrictChange()"
+              [disabled]="!userProfile.district"
+              required>
+              <option value="">เลือกตำบล/แขวง</option>
+              <option *ngFor="let subDistrict of subDistricts" [value]="subDistrict.id">
+                {{ subDistrict.name_th }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">รหัสไปรษณีย์</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              [(ngModel)]="userProfile.zipCode" 
+              name="zipCode"
+              placeholder="รหัสไปรษณีย์"
+              readonly
+              required>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="!profileForm.form.valid">
+            <i class="fas fa-save"></i>
+            บันทึกข้อมูล
+          </button>
+        </form>
+        <div class="change-password-form">
+          <h4 class="section-title">เปลี่ยนรหัสผ่าน</h4>
+          <form (ngSubmit)="changePassword()" #passwordForm="ngForm">
+            <div class="form-group">
+              <label class="form-label">รหัสผ่านปัจจุบัน</label>
+              <input 
+                type="password" 
+                class="form-input" 
+                [(ngModel)]="passwordData.currentPassword" 
+                name="currentPassword"
+                autocomplete="current-password"
+                required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">รหัสผ่านใหม่</label>
+              <input 
+                type="password" 
+                class="form-input" 
+                [(ngModel)]="passwordData.newPassword" 
+                name="newPassword"
+                minlength="6"
+                autocomplete="new-password"
+                required>
+              <div class="password-requirements">
+                รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ยืนยันรหัสผ่านใหม่</label>
+              <input 
+                type="password" 
+                class="form-input" 
+                [(ngModel)]="passwordData.confirmPassword" 
+                name="confirmPassword"
+                autocomplete="new-password"
+                required>
+              <div class="error-text" *ngIf="passwordData.newPassword && passwordData.confirmPassword && passwordData.newPassword !== passwordData.confirmPassword">
+                รหัสผ่านใหม่ไม่ตรงกัน
+              </div>
+            </div>
+            <button type="submit" class="btn btn-secondary" [disabled]="!passwordForm.form.valid || passwordData.newPassword !== passwordData.confirmPassword">
+              <i class="fas fa-key"></i>
+              เปลี่ยนรหัสผ่าน
+            </button>
+          </form>
+        </div>
+        </div>
+      </div>
+      <div class="right-column">
+        <div class="profile-card">
+          <h3>
+            <i class="fas fa-chart-bar"></i>
+            สรุปคำสั่งซื้อ
+          </h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-number">{{ orderStats.total }}</span>
+              <span class="stat-label">ออเดอร์ทั้งหมด</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">{{ orderStats.completed }}</span>
+              <span class="stat-label">ส่งสำเร็จ</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">{{ orderStats.totalSpent | currency:'THB':'symbol':'1.0-0' }}</span>
+              <span class="stat-label">ยอดใช้จ่าย</span>
+            </div>
+          </div>
+        </div>
+        <div class="profile-card">
+          <h3>
+            <i class="fas fa-clock"></i>
+            ออเดอร์ล่าสุด
+          </h3>
+          <ng-container *ngIf="recentOrders?.length; else noOrders">
+            <div class="order-item" *ngFor="let o of recentOrders">
+              <div class="order-info">
+                <h4>หมายเลข #{{ o.order_id }}</h4>
+                <p>{{ o.order_date | date:'d MMM y' }} • {{ getStatusText(o.status) }}</p>
+              </div>
+              <div class="order-meta">
+                <span class="order-amount">{{ o.total_amount | currency:'THB':'symbol':'1.0-0' }}</span>
+                <span class="order-status" [ngClass]="'status-' + o.status">{{ getStatusText(o.status) }}</span>
+              </div>
+            </div>
+            <a routerLink="/history" class="btn btn-outline-primary btn-sm">ดูประวัติทั้งหมด</a>
+          </ng-container>
+          <ng-template #noOrders>
+            <p class="muted">ยังไม่มีออเดอร์ล่าสุด</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>

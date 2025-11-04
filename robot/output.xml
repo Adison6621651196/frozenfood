@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.3.2 (Python 3.13.7 on win32)" generated="2025-10-25T05:52:05.740526" rpa="false" schemaversion="5">
+<suite id="s1" name="Product" source="C:\Users\acer\Desktop\robot\product">
+<suite id="s1-s1" name="Product Page" source="C:\Users\acer\Desktop\robot\product\product_page.robot">
+<kw name="Open Browser And Login" type="SETUP">
+<kw name="Open Browser" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:06.458259" level="INFO">Opening browser 'Chrome' to base url 'https://www.saucedemo.com'.</msg>
+<arg>${BASE_URL}</arg>
+<arg>${BROWSER}</arg>
+<doc>Opens a new browser instance to the optional ``url``.</doc>
+<status status="PASS" start="2025-10-25T05:52:06.457988" elapsed="5.550119"/>
+</kw>
+<kw name="Set Selenium Timeout" owner="SeleniumLibrary">
+<arg>${TIMEOUT}</arg>
+<doc>Sets the timeout that is used by various keywords.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.008668" elapsed="0.002530"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>${USER_INPUT}</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.011453" elapsed="0.111021"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:12.122985" level="INFO">Typing text 'standard_user' into text field 'id=user-name'.</msg>
+<arg>${USER_INPUT}</arg>
+<arg>${USER}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.122705" elapsed="0.158593"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:12.282160" level="INFO">Typing text 'secret_sauce' into text field 'id=password'.</msg>
+<arg>${PASS_INPUT}</arg>
+<arg>${PASS}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.281593" elapsed="0.178575"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:12.460918" level="INFO">Clicking button 'id=login-button'.</msg>
+<arg>${LOGIN_BTN}</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.460437" elapsed="0.184445"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>${INVENTORY}</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.645182" elapsed="0.034176"/>
+</kw>
+<kw name="Location Should Contain" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:12.692717" level="INFO">Current location contains '/inventory.html'.</msg>
+<arg>/inventory.html</arg>
+<doc>Verifies that the current URL contains ``expected``.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.679838" elapsed="0.013017"/>
+</kw>
+<status status="PASS" start="2025-10-25T05:52:06.457080" elapsed="6.235927"/>
+</kw>
+<test id="s1-s1-t1" name="TC-007 Add, Remove item" line="29">
+<kw name="Add All Visible Items To Cart">
+<kw name="Get WebElements" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:12.723718" level="INFO">${btns} = [&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.15")&gt;, &lt;selenium.webdriv...</msg>
+<var>${btns}</var>
+<arg>${ADD_ALL}</arg>
+<doc>Returns a list of WebElement objects matching the ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.695326" elapsed="0.028506"/>
+</kw>
+<kw name="Get Length" owner="BuiltIn">
+<msg time="2025-10-25T05:52:12.724700" level="INFO">Length is 6.</msg>
+<msg time="2025-10-25T05:52:12.724905" level="INFO">${cnt} = 6</msg>
+<var>${cnt}</var>
+<arg>${btns}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.724295" elapsed="0.000656"/>
+</kw>
+<for flavor="IN">
+<iter>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:12.726072" level="INFO">Clicking element '&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.15")&gt;'.</msg>
+<arg>${b}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.725726" elapsed="0.163783"/>
+</kw>
+<var name="${b}">&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.15")&gt;</var>
+<status status="PASS" start="2025-10-25T05:52:12.725506" elapsed="0.164148"/>
+</iter>
+<iter>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:12.890348" level="INFO">Clicking element '&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.16")&gt;'.</msg>
+<arg>${b}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.890028" elapsed="0.083079"/>
+</kw>
+<var name="${b}">&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.16")&gt;</var>
+<status status="PASS" start="2025-10-25T05:52:12.889869" elapsed="0.083577"/>
+</iter>
+<iter>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:12.974466" level="INFO">Clicking element '&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.17")&gt;'.</msg>
+<arg>${b}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:12.974060" elapsed="0.094775"/>
+</kw>
+<var name="${b}">&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.17")&gt;</var>
+<status status="PASS" start="2025-10-25T05:52:12.973723" elapsed="0.095221"/>
+</iter>
+<iter>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:13.069792" level="INFO">Clicking element '&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.18")&gt;'.</msg>
+<arg>${b}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:13.069310" elapsed="0.124319"/>
+</kw>
+<var name="${b}">&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.18")&gt;</var>
+<status status="PASS" start="2025-10-25T05:52:13.069137" elapsed="0.124741"/>
+</iter>
+<iter>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:13.194842" level="INFO">Clicking element '&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.19")&gt;'.</msg>
+<arg>${b}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:13.194464" elapsed="0.084878"/>
+</kw>
+<var name="${b}">&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.19")&gt;</var>
+<status status="PASS" start="2025-10-25T05:52:13.194223" elapsed="0.085269"/>
+</iter>
+<iter>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:13.280455" level="INFO">Clicking element '&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.20")&gt;'.</msg>
+<arg>${b}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:13.279944" elapsed="0.075680"/>
+</kw>
+<var name="${b}">&lt;selenium.webdriver.remote.webelement.WebElement (session="72cf8908d3273bba065eb46d9e673ce9", element="f.60386BFAAC242041D67642F30E5A1D0B.d.6EA6F9C62F4E06C76C3BD8D75E74AC05.e.20")&gt;</var>
+<status status="PASS" start="2025-10-25T05:52:13.279741" elapsed="0.076226"/>
+</iter>
+<var>${b}</var>
+<value>@{btns}</value>
+<status status="PASS" start="2025-10-25T05:52:12.725110" elapsed="0.631036"/>
+</for>
+<kw name="Set Test Variable" owner="BuiltIn">
+<msg time="2025-10-25T05:52:13.358306" level="INFO">${added_count} = 6</msg>
+<arg>${added_count}</arg>
+<arg>${cnt}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<status status="PASS" start="2025-10-25T05:52:13.356456" elapsed="0.001958"/>
+</kw>
+<status status="PASS" start="2025-10-25T05:52:12.694662" elapsed="0.663888"/>
+</kw>
+<kw name="Cart Badge Should Equal">
+<kw name="Wait Until Keyword Succeeds" owner="BuiltIn">
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:13.506133" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-84.png"&gt;&lt;img src="selenium-screenshot-84.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:13.506539" level="FAIL">Element with locator 'css:.shopping_cart_badge' not found.</msg>
+<arg>${CART_BADGE}</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="FAIL" start="2025-10-25T05:52:13.360030" elapsed="0.309030">Element with locator 'css:.shopping_cart_badge' not found.</status>
+</kw>
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:14.182119" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-85.png"&gt;&lt;img src="selenium-screenshot-85.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:14.182341" level="FAIL">Element with locator 'css:.shopping_cart_badge' not found.</msg>
+<arg>${CART_BADGE}</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="FAIL" start="2025-10-25T05:52:13.970044" elapsed="0.213840">Element with locator 'css:.shopping_cart_badge' not found.</status>
+</kw>
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:14.633553" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-86.png"&gt;&lt;img src="selenium-screenshot-86.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:14.633945" level="FAIL">Element with locator 'css:.shopping_cart_badge' not found.</msg>
+<arg>${CART_BADGE}</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="FAIL" start="2025-10-25T05:52:14.484436" elapsed="0.151881">Element with locator 'css:.shopping_cart_badge' not found.</status>
+</kw>
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:15.103922" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-87.png"&gt;&lt;img src="selenium-screenshot-87.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:15.104429" level="FAIL">Element with locator 'css:.shopping_cart_badge' not found.</msg>
+<arg>${CART_BADGE}</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="FAIL" start="2025-10-25T05:52:14.937336" elapsed="0.172756">Element with locator 'css:.shopping_cart_badge' not found.</status>
+</kw>
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:15.543278" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-88.png"&gt;&lt;img src="selenium-screenshot-88.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:15.543495" level="FAIL">Element with locator 'css:.shopping_cart_badge' not found.</msg>
+<arg>${CART_BADGE}</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="FAIL" start="2025-10-25T05:52:15.411220" elapsed="0.134254">Element with locator 'css:.shopping_cart_badge' not found.</status>
+</kw>
+<msg time="2025-10-25T05:52:15.545703" level="FAIL">Keyword 'Element Should Be Visible' failed after retrying 5 times. The last error was: Element with locator 'css:.shopping_cart_badge' not found.</msg>
+<arg>5x</arg>
+<arg>300ms</arg>
+<arg>Element Should Be Visible</arg>
+<arg>${CART_BADGE}</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<status status="FAIL" start="2025-10-25T05:52:13.359777" elapsed="2.188355">Keyword 'Element Should Be Visible' failed after retrying 5 times. The last error was: Element with locator 'css:.shopping_cart_badge' not found.</status>
+</kw>
+<kw name="Get Text" owner="SeleniumLibrary">
+<var>${txt}</var>
+<arg>${CART_BADGE}</arg>
+<doc>Returns the text value of the element identified by ``locator``.</doc>
+<status status="NOT RUN" start="2025-10-25T05:52:15.548503" elapsed="0.000063"/>
+</kw>
+<kw name="Should Be Equal As Strings" owner="BuiltIn">
+<arg>${txt}</arg>
+<arg>${expected}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="NOT RUN" start="2025-10-25T05:52:15.548764" elapsed="0.000063"/>
+</kw>
+<arg>${added_count}</arg>
+<status status="FAIL" start="2025-10-25T05:52:13.359274" elapsed="2.189762">Keyword 'Element Should Be Visible' failed after retrying 5 times. The last error was: Element with locator 'css:.shopping_cart_badge' not found.</status>
+</kw>
+<kw name="Remove All Items From Cart">
+<status status="NOT RUN" start="2025-10-25T05:52:15.549699" elapsed="0.000091"/>
+</kw>
+<kw name="Cart Badge Should Be Hidden">
+<status status="NOT RUN" start="2025-10-25T05:52:15.550219" elapsed="0.000062"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary" type="TEARDOWN">
+<msg time="2025-10-25T05:52:15.672359" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-89.png"&gt;&lt;img src="selenium-screenshot-89.png" width="800px"&gt;&lt;/a&gt;</msg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2025-10-25T05:52:15.550796" elapsed="0.121915"/>
+</kw>
+<doc>Adding all available products to cart then removing them, verifying the cart updates</doc>
+<status status="FAIL" start="2025-10-25T05:52:12.693131" elapsed="2.979941">Keyword 'Element Should Be Visible' failed after retrying 5 times. The last error was: Element with locator 'css:.shopping_cart_badge' not found.</status>
+</test>
+<test id="s1-s1-t2" name="TC-008 Sort item – Name (A to Z)" line="36">
+<kw name="Select From List By Value" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:15.677118" level="INFO">Selecting options from selection list 'css:[data-test="product_sort_container"]' by value az.</msg>
+<msg time="2025-10-25T05:52:15.803428" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-90.png"&gt;&lt;img src="selenium-screenshot-90.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:15.803617" level="FAIL">List with locator 'css:[data-test="product_sort_container"]' not found.</msg>
+<arg>${SORT_SELECT}</arg>
+<arg>az</arg>
+<doc>Selects options from selection list ``locator`` by ``values``.</doc>
+<status status="FAIL" start="2025-10-25T05:52:15.676199" elapsed="0.146914">List with locator 'css:[data-test="product_sort_container"]' not found.</status>
+</kw>
+<kw name="Wait Until Inventory Stable">
+<status status="NOT RUN" start="2025-10-25T05:52:15.823704" elapsed="0.000074"/>
+</kw>
+<kw name="Get Visible Item Titles">
+<var>${titles}</var>
+<status status="NOT RUN" start="2025-10-25T05:52:15.824283" elapsed="0.000079"/>
+</kw>
+<kw name="List Should Be Sorted Asc">
+<arg>${titles}</arg>
+<status status="NOT RUN" start="2025-10-25T05:52:15.824733" elapsed="0.000200"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary" type="TEARDOWN">
+<msg time="2025-10-25T05:52:15.919277" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-91.png"&gt;&lt;img src="selenium-screenshot-91.png" width="800px"&gt;&lt;/a&gt;</msg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2025-10-25T05:52:15.825589" elapsed="0.093941"/>
+</kw>
+<doc>Product should correctly sort items from A to Z</doc>
+<status status="FAIL" start="2025-10-25T05:52:15.674160" elapsed="0.245762">List with locator 'css:[data-test="product_sort_container"]' not found.</status>
+</test>
+<test id="s1-s1-t3" name="TC-009 Sort item – Name (Z to A)" line="45">
+<kw name="Select From List By Value" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:15.922190" level="INFO">Selecting options from selection list 'css:[data-test="product_sort_container"]' by value za.</msg>
+<msg time="2025-10-25T05:52:16.043903" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-92.png"&gt;&lt;img src="selenium-screenshot-92.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:16.044162" level="FAIL">List with locator 'css:[data-test="product_sort_container"]' not found.</msg>
+<arg>${SORT_SELECT}</arg>
+<arg>za</arg>
+<doc>Selects options from selection list ``locator`` by ``values``.</doc>
+<status status="FAIL" start="2025-10-25T05:52:15.921862" elapsed="0.124967">List with locator 'css:[data-test="product_sort_container"]' not found.</status>
+</kw>
+<kw name="Wait Until Inventory Stable">
+<status status="NOT RUN" start="2025-10-25T05:52:16.047382" elapsed="0.000048"/>
+</kw>
+<kw name="Get Visible Item Titles">
+<var>${titles}</var>
+<status status="NOT RUN" start="2025-10-25T05:52:16.047765" elapsed="0.000032"/>
+</kw>
+<kw name="List Should Be Sorted Desc">
+<arg>${titles}</arg>
+<status status="NOT RUN" start="2025-10-25T05:52:16.048088" elapsed="0.000029"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary" type="TEARDOWN">
+<msg time="2025-10-25T05:52:16.164425" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-93.png"&gt;&lt;img src="selenium-screenshot-93.png" width="800px"&gt;&lt;/a&gt;</msg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2025-10-25T05:52:16.048712" elapsed="0.115913"/>
+</kw>
+<doc>Product should correctly sort items from Z to A</doc>
+<status status="FAIL" start="2025-10-25T05:52:15.921026" elapsed="0.243936">List with locator 'css:[data-test="product_sort_container"]' not found.</status>
+</test>
+<test id="s1-s1-t4" name="TC-010 Sort item – Price (low to high)" line="52">
+<kw name="Select From List By Value" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:16.167123" level="INFO">Selecting options from selection list 'css:[data-test="product_sort_container"]' by value lohi.</msg>
+<msg time="2025-10-25T05:52:16.285937" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-94.png"&gt;&lt;img src="selenium-screenshot-94.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:16.286141" level="FAIL">List with locator 'css:[data-test="product_sort_container"]' not found.</msg>
+<arg>${SORT_SELECT}</arg>
+<arg>lohi</arg>
+<doc>Selects options from selection list ``locator`` by ``values``.</doc>
+<status status="FAIL" start="2025-10-25T05:52:16.166676" elapsed="0.121435">List with locator 'css:[data-test="product_sort_container"]' not found.</status>
+</kw>
+<kw name="Wait Until Inventory Stable">
+<status status="NOT RUN" start="2025-10-25T05:52:16.288785" elapsed="0.000078"/>
+</kw>
+<kw name="Get Visible Item Prices">
+<var>${prices}</var>
+<status status="NOT RUN" start="2025-10-25T05:52:16.289293" elapsed="0.000051"/>
+</kw>
+<kw name="List Should Be Sorted Num Asc">
+<arg>${prices}</arg>
+<status status="NOT RUN" start="2025-10-25T05:52:16.289631" elapsed="0.000042"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary" type="TEARDOWN">
+<msg time="2025-10-25T05:52:16.367347" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-95.png"&gt;&lt;img src="selenium-screenshot-95.png" width="800px"&gt;&lt;/a&gt;</msg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2025-10-25T05:52:16.290035" elapsed="0.077436"/>
+</kw>
+<doc>Product should correctly sort items from price low to high</doc>
+<status status="FAIL" start="2025-10-25T05:52:16.165958" elapsed="0.201883">List with locator 'css:[data-test="product_sort_container"]' not found.</status>
+</test>
+<test id="s1-s1-t5" name="TC-011 Sort item – Price (high to low)" line="59">
+<kw name="Select From List By Value" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:16.370028" level="INFO">Selecting options from selection list 'css:[data-test="product_sort_container"]' by value hilo.</msg>
+<msg time="2025-10-25T05:52:16.501993" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-96.png"&gt;&lt;img src="selenium-screenshot-96.png" width="800px"&gt;&lt;/a&gt;</msg>
+<msg time="2025-10-25T05:52:16.502206" level="FAIL">List with locator 'css:[data-test="product_sort_container"]' not found.</msg>
+<arg>${SORT_SELECT}</arg>
+<arg>hilo</arg>
+<doc>Selects options from selection list ``locator`` by ``values``.</doc>
+<status status="FAIL" start="2025-10-25T05:52:16.369751" elapsed="0.133853">List with locator 'css:[data-test="product_sort_container"]' not found.</status>
+</kw>
+<kw name="Wait Until Inventory Stable">
+<status status="NOT RUN" start="2025-10-25T05:52:16.504209" elapsed="0.000071"/>
+</kw>
+<kw name="Get Visible Item Prices">
+<var>${prices}</var>
+<status status="NOT RUN" start="2025-10-25T05:52:16.504758" elapsed="0.000042"/>
+</kw>
+<kw name="List Should Be Sorted Num Desc">
+<arg>${prices}</arg>
+<status status="NOT RUN" start="2025-10-25T05:52:16.505236" elapsed="0.000064"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary" type="TEARDOWN">
+<msg time="2025-10-25T05:52:16.662395" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-97.png"&gt;&lt;img src="selenium-screenshot-97.png" width="800px"&gt;&lt;/a&gt;</msg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2025-10-25T05:52:16.505880" elapsed="0.156820"/>
+</kw>
+<doc>Product should correctly sort items from price high to low</doc>
+<status status="FAIL" start="2025-10-25T05:52:16.369015" elapsed="0.294305">List with locator 'css:[data-test="product_sort_container"]' not found.</status>
+</test>
+<test id="s1-s1-t6" name="TC-012 Cart icon" line="66">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:16.669098" level="INFO">Clicking element 'css:.shopping_cart_link'.</msg>
+<arg>${CART_LINK}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2025-10-25T05:52:16.668510" elapsed="0.146038"/>
+</kw>
+<kw name="Wait Until Location Contains" owner="SeleniumLibrary">
+<arg>/cart.html</arg>
+<arg>${TIMEOUT}</arg>
+<doc>Waits until the current URL contains ``expected``.</doc>
+<status status="PASS" start="2025-10-25T05:52:16.815388" elapsed="0.006463"/>
+</kw>
+<kw name="Location Should Contain" owner="SeleniumLibrary">
+<msg time="2025-10-25T05:52:16.827696" level="INFO">Current location contains '/cart.html'.</msg>
+<arg>/cart.html</arg>
+<doc>Verifies that the current URL contains ``expected``.</doc>
+<status status="PASS" start="2025-10-25T05:52:16.822258" elapsed="0.005631"/>
+</kw>
+<kw name="Go Back" owner="SeleniumLibrary">
+<doc>Simulates the user clicking the back button on their browser.</doc>
+<status status="PASS" start="2025-10-25T05:52:16.828323" elapsed="0.071252"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary" type="TEARDOWN">
+<msg time="2025-10-25T05:52:17.069413" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="selenium-screenshot-98.png"&gt;&lt;img src="selenium-screenshot-98.png" width="800px"&gt;&lt;/a&gt;</msg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2025-10-25T05:52:16.900332" elapsed="0.169521"/>
+</kw>
+<doc>Should navigate to the cart page when clicking the cart icon</doc>
+<status status="PASS" start="2025-10-25T05:52:16.666257" elapsed="0.404280"/>
+</test>
+<kw name="Close All Browsers" owner="SeleniumLibrary" type="TEARDOWN">
+<doc>Closes all open browsers and resets the browser cache.</doc>
+<status status="PASS" start="2025-10-25T05:52:17.072140" elapsed="2.273062"/>
+</kw>
+<doc>PRODUCT PAGE FUNCTION (TC-007..TC-012) – saucedemo.com</doc>
+<status status="FAIL" start="2025-10-25T05:52:05.796750" elapsed="13.548596"/>
+</suite>
+<status status="FAIL" start="2025-10-25T05:52:05.743895" elapsed="13.604144"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="5" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="Product" id="s1" pass="1" fail="5" skip="0">Product</stat>
+<stat name="Product Page" id="s1-s1" pass="1" fail="5" skip="0">Product.Product Page</stat>
+</suite>
+</statistics>
+<errors>
+<msg time="2025-10-25T05:52:05.729509" level="WARN">Error in file 'C:\Users\acer\Desktop\robot\product\product_page.robot' on line 124: The '[Return]' setting is deprecated. Use the 'RETURN' statement instead.</msg>
+<msg time="2025-10-25T05:52:05.729775" level="WARN">Error in file 'C:\Users\acer\Desktop\robot\product\product_page.robot' on line 134: The '[Return]' setting is deprecated. Use the 'RETURN' statement instead.</msg>
+<msg time="2025-10-25T05:52:05.730082" level="WARN">Error in file 'C:\Users\acer\Desktop\robot\product\product_page.robot' on line 140: The '[Return]' setting is deprecated. Use the 'RETURN' statement instead.</msg>
+</errors>
+</robot>

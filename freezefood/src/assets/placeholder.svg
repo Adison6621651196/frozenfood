@@ -1,0 +1,16 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="120" rx="12" fill="#f8f9fa"/>
+  <rect x="10" y="10" width="100" height="100" rx="8" fill="#e9ecef" stroke="#dee2e6" stroke-width="2"/>
+  
+  <!-- Image icon -->
+  <path d="M30 45C30 42.7909 31.7909 41 34 41H86C88.2091 41 90 42.7909 90 45V75C90 77.2091 88.2091 79 86 79H34C31.7909 79 30 77.2091 30 75V45Z" fill="#6c757d" opacity="0.3"/>
+  
+  <!-- Mountain shapes -->
+  <path d="M35 70L45 55L55 65L70 50L85 70V75C85 75.5523 84.5523 76 84 76H36C35.4477 76 35 75.5523 35 75V70Z" fill="#6c757d" opacity="0.5"/>
+  
+  <!-- Sun/circle -->
+  <circle cx="75" cy="52" r="6" fill="#6c757d" opacity="0.4"/>
+  
+  <!-- Text -->
+  <text x="60" y="95" text-anchor="middle" fill="#6c757d" font-family="Arial, sans-serif" font-size="10" opacity="0.7">ไม่มีรูปภาพ</text>
+</svg>

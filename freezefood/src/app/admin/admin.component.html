@@ -1,0 +1,957 @@
+<div class="admin-full-page">
+  <header class="admin-header">
+    <div class="admin-header-content">
+      <div class="admin-top-bar">
+      <div class="header-left">
+          <span class="logo-icon">❄️</span>
+          <span class="logo-text">FreezeFood</span>
+      </div>
+  <nav class="header-nav admin-subnav">
+    <a href="#" class="nav-item" [class.active]="currentView === 'dashboard'" (click)="showDashboard(); $event.preventDefault();">หน้าหลัก</a>
+    <a href="#" class="nav-item" [class.active]="currentView === 'products'" (click)="showProductManagement(); $event.preventDefault();">จัดการสินค้า</a>
+    <a href="#" class="nav-item" [class.active]="currentView === 'delivery'" (click)="showDeliveryManagement(); $event.preventDefault();">จัดส่ง</a>
+    <a href="#" class="nav-item" [class.active]="currentView === 'stock'" (click)="showStockManagement(); $event.preventDefault();">จัดการสต็อก</a>
+  </nav>
+        <div class="admin-auth-buttons">
+          <button class="admin-logout-btn" (click)="adminLogout()">ออกจากหน้า admin</button>
+        </div>
+      </div>
+    </div>
+  </header>
+<div *ngIf="currentView === 'dashboard'" class="admin-dashboard" style="background: #f5f5f5; color: #333; min-height: calc(100vh - 80px); padding: 30px;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="modern-card" style="background: #ffffff; border: 1px solid #e5e7eb; padding: 20px; margin-bottom: 25px;">
+      <h3 class="section-title" style="color: #000000; margin-bottom: 20px; font-size: 1.5rem; font-weight: 700;"> สถิติออเดอร์</h3>
+      <div style="color: black;">
+        <div style="margin-bottom: 20px; font-size: 1rem; font-weight: normal;">รวมออเดอร์ทั้งหมด : <span style="color: black;">{{ totalOrders }}</span> ออเดอร์</div>
+        <div *ngIf="outOfStockCount > 0" style="margin-top: 20px;">
+          <h4 style="color: black; margin-bottom: 15px; font-size: 1.1rem; font-weight: normal;">รายการสินค้าที่หมด:</h4>
+          <div style="display: grid; gap: 12px;">
+            <div *ngFor="let product of getOutOfStockProducts(); let i = index" 
+                 class="out-of-stock-item" style="background: white; border: 1px solid #ddd; padding: 15px; ">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: normal; color: black; font-size: 1rem;">{{ product.product_name }}</div>
+                  <div style="color: black; font-size: 0.9rem; margin-top: 5px;">ID: {{ product.product_id }}</div>
+                </div>
+                <div style="text-align: left;">
+                  <div style="color: black; font-weight: normal; font-size: 1rem;">หมด</div>
+                  <div style="color: #666; font-size: 0.8rem; margin-top: 2px;">คงเหลือ: {{ product.quantity }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="outOfStockCount === 0" class="success-message">
+           สินค้าทั้งหมดยังมีในสต็อก
+        </div>
+        <div style="margin-top: 20px; color: #666; font-style: italic; padding: 15px; background: rgba(33, 150, 243, 0.1);  border-left: 4px solid #2196F3;">
+           รับประจำการ
+        </div>
+      </div>
+    </div>
+    <div class="modern-card" style="background: #ffffff; border: 1px solid #e5e7eb; padding: 20px; margin-bottom: 25px;">
+      <h3 class="section-title" style="color: #000000; margin-bottom: 20px; font-size: 1.3rem; font-weight: normal;">สถิติการชำระเงิน</h3>
+      <div class="stats-grid">
+        <div class="stat-card stat-pending" style="background: #ffffff; border: 1px solid #e5e7eb; padding: 20px; text-align: center;">
+          <div class="stat-number" style="font-size: 2rem; font-weight: 600; margin-bottom: 10px; color: #374151;">{{ getPendingUnpaidCount() }}</div>
+          <div class="stat-label" style="color: #666; font-size: 0.9rem; font-weight: normal;">รอยืนยัน+รอชำระ</div>
+        </div>
+        <div class="stat-card stat-preparing" style="background: #ffffff; border: 1px solid #e5e7eb; padding: 20px; text-align: center;">
+          <div class="stat-number" style="font-size: 2rem; font-weight: 600; margin-bottom: 10px; color: #374151;">{{ getPreparingUnpaidCount() }}</div>
+          <div class="stat-label" style="color: #6b7280; font-size: 0.9rem; font-weight: normal;">ยืนยันแล้ว+รอชำระ</div>
+        </div>
+        <div class="stat-card stat-paid" style="background: #ffffff; border: 1px solid #e5e7eb; padding: 20px; text-align: center;">
+          <div class="stat-number" style="font-size: 2rem; font-weight: 600; margin-bottom: 10px; color: #374151;">{{ getPaidOrdersCount() }}</div>
+          <div class="stat-label" style="color: #666; font-size: 0.9rem; font-weight: normal;">ชำระแล้ว</div>
+        </div>
+      </div>
+    </div>
+    <div class="modern-card">
+      <h3 class="section-title" style="color: #000000; margin-bottom: 20px; font-size: 1.3rem; font-weight: normal;">รายการสั่งซื้อ</h3>
+      <div style="color: #000000; margin-bottom: 20px;">
+        <div style="font-size: 1.1rem; font-weight: normal;">รวม {{ allOrders.length }} ออเดอร์</div>
+        <div style="color: #666; font-size: 0.9rem; margin-top: 8px; padding: 10px; background: #f8f9fa;  border-left: 3px solid #2196F3;">
+          รอดำเนินการ + ยืนยันแล้วแต่ยังไม่ชำระเงิน
+        </div>
+      </div>
+      <div style="margin-top: 25px;">
+        <div *ngIf="allOrders.length === 0" style="text-align: center; color: #6b7280; padding: 40px; background: #f8f9fa;  border: 1px solid #e0e0e0;">
+          <div style="font-size: 1.1rem; font-weight: normal;">ไม่มีออเดอร์ที่ต้องติดตาม</div>
+          <div style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">ระบบพร้อมใช้งานเมื่อมีออเดอร์เข้ามา</div>
+        </div>
+        <div *ngFor="let order of allOrders; let i = index" 
+             class="order-item"
+             [style.--status-color]="getStatusColor(order.status)"
+             (click)="viewOrderDetails(order.order_id)"
+             style="background: #ffffff; border: 1px solid #e5e7eb; padding: 20px; margin-bottom: 15px; transition: all 0.2s ease; cursor: pointer;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="flex: 1;">
+              <div style="font-weight: normal; margin-bottom: 8px; font-size: 1rem; color: #333;">Order ID: {{ order.order_id }}</div>
+              <div style="margin-bottom: 5px; color: #666;">👤 ลูกค้า: {{ order.customer_name || order.username }}</div>
+              <div style="margin-bottom: 5px; color: #666;">📞 เบอร์โทร: {{ order.final_phone || order.user_phone || order.phone || 'ไม่ระบุ' }}</div>
+              <div style="color: #666;">📅 วันที่: {{ formatDate(order.order_date) }}</div>
+            </div>
+            <div style="text-align: left; margin: 0 20px; padding: 15px; background: rgba(33, 150, 243, 0.1);  border: 1px solid rgba(33, 150, 243, 0.2);">
+              <div style="color: #2196F3; font-weight: bold; margin-bottom: 5px;">💳 {{ order.payment_method }}</div>
+              <div [style.color]="order.payment_status === 'paid' ? '#4CAF50' : (order.payment_proof ? '#ff9800' : '#ef4444')" style="font-weight: bold; font-size: 0.9rem;">
+                <span *ngIf="order.payment_status === 'paid'">✅ ชำระแล้ว</span>
+                <span *ngIf="order.payment_status !== 'paid' && order.payment_proof">📎 แนบสลิปแล้ว</span>
+                <span *ngIf="order.payment_status !== 'paid' && !order.payment_proof">⏳ ยังไม่ชำระ</span>
+              </div>
+            </div>
+            <div style="text-align: left;">
+              <div [style.color]="getStatusColor(order.status)" 
+                   style="font-weight: bold; padding: 8px 15px; background: rgba(33, 150, 243, 0.1);  margin-bottom: 8px; border: 1px solid rgba(33, 150, 243, 0.2);">
+                {{ getStatusText(order.status) }}
+              </div>
+              <div *ngIf="order.payment_status === 'unpaid' && order.status === 'preparing'" 
+                   style="color: #2196F3; font-size: 0.85rem; font-weight: 600; padding: 4px 8px; background: rgba(33, 150, 243, 0.1); ">
+                 ยืนยันแล้ว รอชำระ
+              </div>
+              <div *ngIf="order.payment_status === 'unpaid' && order.status === 'pending'" 
+                   style="color: #ff9800; font-size: 0.85rem; font-weight: 600; padding: 4px 8px; background: rgba(255, 152, 0, 0.1); ">
+                 รอชำระเงิน
+              </div>
+              <div style="margin-top: 10px; display: flex; gap: 8px; justify-content: flex-end;">
+                <button (click)="showEditOrderForm(order); $event.stopPropagation()" 
+                        style="background: #374151; color: white; border: none; padding: 6px 12px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
+                   แก้ไข
+                </button>
+                <button (click)="deleteOrder(order.order_id); $event.stopPropagation()" 
+                        style="background: #dc2626; color: white; border: none; padding: 6px 12px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
+                   ลบ
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="currentView === 'products'" class="admin-dashboard" style="background: #f8f9fa; color: #333; min-height: calc(100vh - 80px); padding: 20px;">
+  <div class="container">
+    <div class="header-section">
+      <h2 class="admin-title"> จัดการสินค้า</h2>
+      <div style="display: flex; gap: 10px;">
+        <button class="modern-btn" (click)="showCategoryManagement()" style="background: #1a73e8;">
+          <span class="btn-icon"></span>
+          จัดการหมวดหมู่
+        </button>
+        <button class="modern-btn" (click)="showAddProductForm()">
+          <span class="btn-icon"></span>
+          เพิ่มสินค้าใหม่
+        </button>
+      </div>
+    </div>
+    <div *ngIf="!showProductForm && !showCategoryForm" class="modern-card">
+      <div class="card-header">
+        <h3 class="section-title"> รายการสินค้าทั้งหมด</h3>
+        <div class="product-count">{{ allProducts.length }} รายการ</div>
+      </div>
+      <div class="table-container">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th class="text-center">รหัสสินค้า</th>
+              <th class="text-center">ชื่อสินค้า</th>
+              <th class="text-center">รูปภาพ</th>
+              <th class="text-center">หมวดหมู่</th>
+              <th class="text-center">ราคา</th>
+              <th class="text-center">จำนวน</th>
+              <th class="text-center">สถานะ</th>
+              <th class="text-center">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of allProducts">
+              <td>{{ product.product_id }}</td>
+              <td class="product-name" style="color: #333; font-weight: 600;">{{ product.product_name }}</td>
+              <td class="text-center">
+                <div *ngIf="product.product_image; else noImageTemplate" class="product-image-container">
+                  <img [src]="getImageUrl(product.product_image)" 
+                       [alt]="product.product_name"
+                       class="product-image"
+                       (error)="onImageError($event)"
+                       (load)="onImageLoad($event)">
+                </div>
+                <ng-template #noImageTemplate>
+                  <div class="no-image-placeholder">
+                    <span>ไม่มีรูป</span>
+                  </div>
+                </ng-template>
+              </td>
+              <td>{{ getCategoryName(product.category_id) }}</td>
+              <td class="price">{{ product.price }} บาท</td>
+              <td>{{ product.quantity }}</td>
+              <td>
+                <span class="status-badge" 
+                      [ngClass]="product.quantity > 0 ? 'in-stock' : 'out-of-stock'"
+                      [style.background]="product.quantity > 0 ? '#e8f5e8' : '#ffebee'"
+                      [style.color]="product.quantity > 0 ? '#4CAF50' : '#f44336'"
+                      style="padding: 6px 12px;  font-size: 0.85rem; font-weight: 600;">
+                  {{ product.quantity > 0 ? 'มีสินค้า' : 'หมด' }}
+                </span>
+              </td>
+              <td class="text-center">
+                <div class="action-buttons">
+                  <button class="action-btn edit-btn" (click)="editProduct(product)">
+                    <span class="btn-icon"></span>
+                    แก้ไข
+                  </button>
+                  <button class="action-btn delete-btn" (click)="deleteProduct(product.product_id)">
+                    <span class="btn-icon"></span>
+                    ลบ
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div *ngIf="showProductForm" class="modern-card product-form">
+      <div class="card-header">
+        <h3 class="section-title">{{ isEditMode ? ' แก้ไขสินค้า' : ' เพิ่มสินค้าใหม่' }}</h3>
+        <button class="cancel-btn" (click)="cancelProductForm()">✕ ยกเลิก</button>
+      </div>
+      <form (ngSubmit)="saveProduct()" class="product-form-grid">
+        <div class="form-group" *ngIf="isEditMode">
+          <label class="form-label">รหัสสินค้า</label>
+          <input type="text" 
+                 [(ngModel)]="productForm.product_id" 
+                 name="product_id" 
+                 disabled
+                 required
+                 class="form-input disabled">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ชื่อสินค้า</label>
+          <input type="text" 
+                 [(ngModel)]="productForm.product_name" 
+                 name="product_name" 
+                 required
+                 class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">หมวดหมู่</label>
+          <select [(ngModel)]="productForm.category_id" 
+                  name="category_id" 
+                  required
+                  class="form-select">
+            <option value="">เลือกหมวดหมู่</option>
+            <option *ngFor="let category of allCategories" [value]="category.category_id">
+              {{ category.category_name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ราคา (บาท)</label>
+          <input type="number" 
+                 [(ngModel)]="productForm.price" 
+                 name="price" 
+                 min="0" 
+                 step="0.01" 
+                 required
+                 class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">จำนวน</label>
+          <input type="number" 
+                 [(ngModel)]="productForm.quantity" 
+                 name="quantity" 
+                 min="0" 
+                 required
+                 class="form-input">
+        </div>
+        <div class="form-group image-upload-group" style="grid-column: 1 / -1;">
+          <label class="form-label">รูปภาพ <span style="color: red;">*</span></label>
+          <div class="file-upload-container">
+            <input type="file" 
+                   accept="image/*"
+                   (change)="onImageFileSelected($event)"
+                   #fileInput
+                   id="imageUpload"
+                   class="file-input"
+                   required>
+            <label for="imageUpload" class="file-input-label">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <span>{{ selectedImageFile ? selectedImageFile.name : 'เลือกรูปภาพ' }}</span>
+            </label>
+          </div>
+          
+          <div *ngIf="imagePreviewUrl" class="image-preview" style="margin-top: 15px;">
+            <img [src]="imagePreviewUrl" alt="Preview" class="preview-image">
+            <button type="button" 
+                    (click)="removeSelectedImage()" 
+                    class="remove-image-btn">
+              <i class="fas fa-times"></i> ลบรูปภาพ
+            </button>
+          </div>
+          
+          <input type="hidden" [(ngModel)]="productForm.product_image" name="product_image">
+        </div>
+        
+        <div class="form-actions" style="grid-column: 1 / -1; margin-top: 20px;">
+          <button type="submit" 
+                  class="submit-btn"
+                  [disabled]="!isFormValid()">
+            <i class="fas" [class.fa-save]="isEditMode" [class.fa-plus]="!isEditMode"></i>
+            {{ isEditMode ? 'บันทึกการแก้ไข' : 'เพิ่มสินค้า' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ฟอร์มจัดการหมวดหมู่ -->
+    <div *ngIf="showCategoryForm" class="modern-card product-form">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 class="section-title">{{ isEditCategoryMode ? ' แก้ไขหมวดหมู่' : ' เพิ่มหมวดหมู่ใหม่' }}</h3>
+        <button type="button" class="cancel-btn" (click)="cancelCategoryForm()" style="margin: 0;">
+          ✕ ยกเลิก
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveCategory()">
+        <div class="form-group">
+          <label class="form-label">ชื่อหมวดหมู่ <span style="color: red;">*</span></label>
+          <input type="text" 
+                 [(ngModel)]="categoryForm.category_name" 
+                 name="category_name" 
+                 placeholder="กรอกชื่อหมวดหมู่"
+                 required
+                 class="form-input"
+                 [style.border-color]="categoryFormSubmitted && (!categoryForm.category_name || !categoryForm.category_name.trim()) ? '#f56565' : ''">
+          <small *ngIf="categoryFormSubmitted && (!categoryForm.category_name || !categoryForm.category_name.trim())" 
+                 style="color: #f56565; font-size: 14px; margin-top: 5px; display: block;">
+            กรุณากรอกชื่อหมวดหมู่
+          </small>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">
+            <span class="btn-icon">{{ isEditCategoryMode ? '' : '' }}</span>
+            {{ isEditCategoryMode ? 'บันทึกการแก้ไข' : 'เพิ่มหมวดหมู่' }}
+          </button>
+        </div>
+      </form>
+
+      <!-- รายการหมวดหมู่ทั้งหมด -->
+      <div class="modern-card" style="margin-top: 30px;">
+        <div class="card-header">
+          <h3 class="section-title"> รายการหมวดหมู่ทั้งหมด</h3>
+          <div class="product-count">{{ allCategories.length }} รายการ</div>
+        </div>
+        <div class="table-container">
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th class="text-center">รหัสหมวดหมู่</th>
+                <th>ชื่อหมวดหมู่</th>
+                <th class="text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let category of allCategories">
+                <td class="text-center">{{ category.category_id }}</td>
+                <td>{{ category.category_name }}</td>
+                <td class="text-center">
+                  <button (click)="editCategory(category)" class="action-btn edit-btn" style="margin-right: 10px;">
+                     แก้ไข
+                  </button>
+                  <button (click)="deleteCategory(category.category_id)" class="action-btn delete-btn">
+                     ลบ
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div *ngIf="showOrderDetails" style="background: #f8f9fa; color: #333; min-height: 100vh; padding: 20px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+      <h2 style="color: #374151; font-size: 1.8rem; font-weight: 600;">รายละเอียดออเดอร์</h2>
+      <button style="background: #374151; color: #fff; border: none; padding: 10px 20px; cursor: pointer;" (click)="backToAdminDashboard()">← กลับ</button>
+    </div>    <div *ngIf="selectedOrder" style="background: #ffffff; padding: 20px; margin-bottom: 20px; border: 1px solid #e5e7eb;">
+      <h3 style="color: #374151; margin-bottom: 15px; font-weight: 600;">ข้อมูลออเดอร์</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; color: #333;">
+        <div>
+          <div><strong>Order ID:</strong> {{ selectedOrder.order_id }}</div>
+          <div><strong>ลูกค้า:</strong> {{ selectedOrder.customer_name || selectedOrder.username }}</div>
+          <div><strong>เบอร์โทรศัพท์:</strong> {{ selectedOrder.final_phone || selectedOrder.user_phone || selectedOrder.phone || 'ไม่ระบุ' }}</div>
+          <div><strong>วันที่สั่ง:</strong> {{ formatDate(selectedOrder.order_date) }}</div>
+        </div>
+        <div>
+          <div><strong>วิธีชำระ:</strong> {{ selectedOrder.payment_method }}</div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <strong>สถานะชำระ:</strong> 
+            <span [style.color]="selectedOrder.payment_status === 'paid' ? '#4CAF50' : (selectedOrder.payment_proof ? '#ff9800' : '#f44336')" style="font-weight: 600;">
+              <span *ngIf="selectedOrder.payment_status === 'paid'">✅ ชำระแล้ว</span>
+              <span *ngIf="selectedOrder.payment_status !== 'paid' && selectedOrder.payment_proof">📎 แนบสลิปแล้ว</span>
+              <span *ngIf="selectedOrder.payment_status !== 'paid' && !selectedOrder.payment_proof">⏳ ยังไม่ชำระ</span>
+            </span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <strong>เปลี่ยนสถานะ:</strong>
+            <select [(ngModel)]="selectedPaymentStatus" 
+                    style="padding: 5px; border: 1px solid #e5e7eb; background: #fff; color: #333;">
+              <option value="unpaid">ยังไม่ชำระ</option>
+              <option value="paid">ชำระแล้ว</option>
+              <option value="checking">กำลังตรวจสอบ</option>
+            </select>
+            <button (click)="updatePaymentStatus()" 
+                    style="background: #374151; color: #fff; border: none; padding: 5px 10px; cursor: pointer;">
+              อัพเดท
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Payment Proof Section -->
+      <div *ngIf="selectedOrder.payment_method === 'qr' && selectedOrder.payment_proof" 
+           style="margin-top: 20px; padding: 20px; background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 0;">
+        <h4 style="color: #374151; margin-bottom: 15px; font-weight: 600;">
+          <span style="margin-right: 8px;"></span>หลักฐานการชำระเงิน
+        </h4>
+        <div style="display: flex; justify-content: center; align-items: center; background: #fff; padding: 15px; border: 1px solid #e5e7eb; border-radius: 0;">
+          <img [src]="getPaymentProofUrl(selectedOrder.payment_proof)" 
+               [alt]="'หลักฐานการชำระเงิน Order ' + selectedOrder.order_id"
+               style="max-width: 100%; max-height: 500px; width: auto; height: auto; object-fit: contain; border-radius: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+               (error)="onImageError($event)">
+        </div>
+        <div style="margin-top: 10px; text-align: center; color: #666; font-size: 0.9rem;">
+          <a [href]="getPaymentProofUrl(selectedOrder.payment_proof)" 
+             target="_blank" 
+             style="color: #2196F3; text-decoration: none; font-weight: 600;">
+            ดูขนาดเต็ม
+          </a>
+        </div>
+      </div>
+      
+      <div *ngIf="selectedOrder.payment_method === 'qr' && !selectedOrder.payment_proof" 
+           style="margin-top: 20px; padding: 20px; background: #fff3e0; border: 1px solid #ff9800; border-radius: 0;">
+        <div style="text-align: center; color: #ff9800; font-weight: 600;">
+          <span style="margin-right: 8px;"></span>ยังไม่มีหลักฐานการชำระเงิน
+        </div>
+      </div>
+    </div>
+    <div style="background: #ffffff; padding: 20px; border: 1px solid #e5e7eb;">
+      <h3 style="color: #374151; margin-bottom: 15px; font-weight: 600;">รายการสินค้า</h3>
+      <div *ngFor="let item of orderItems" style="background: #f8f9fa; margin-bottom: 10px; padding: 15px; border: 1px solid #e5e7eb;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="flex-grow: 1;">
+            <div style="font-weight: bold; color: #333;">{{ getProductName(item.product_id) }}</div>
+            <div style="color: #666; font-size: 0.9rem;">Product ID: {{ item.product_id }}</div>
+            <div style="color: #333;">จำนวน: {{ item.quantity }} ชิ้น</div>
+          </div>
+          <div style="text-align: left;">
+            <div style="color: #4CAF50;">{{ item.price }} บาท/ชิ้น</div>
+            <div style="font-weight: bold; color: #333;">รวม: {{ item.price * item.quantity }} บาท</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border: 1px solid #e5e7eb;">
+        <div style="text-align: left; margin-bottom: 15px;">
+          <div style="font-size: 1.2rem; font-weight: bold; color: #374151;">
+            ยอดรวมทั้งหมด: {{ getTotalOrderAmount() }} บาท
+          </div>
+        </div>
+        <div style="text-align: center;">
+          <button (click)="confirmAllItemsDelivery()" 
+                  *ngIf="orderItems.length > 0 && selectedOrder?.status === 'pending'"
+                  style="background: #374151; color: #fff; border: none; padding: 12px 30px; cursor: pointer; font-size: 1rem; font-weight: bold;">
+            ยืนยันออเดอร์
+          </button>
+          <div *ngIf="selectedOrder?.status === 'preparing'" 
+               style="color: #374151; font-size: 1.1rem; font-weight: bold; padding: 10px; background: #f8f9fa; border: 1px solid #e5e7eb;">
+             ออเดอร์นี้อยู่ในสถานะ "กำลังจัดเตรียมสินค้า"
+          </div>
+          <div *ngIf="orderItems.length === 0" 
+               style="color: #999; font-size: 1rem; font-style: italic;">
+            ไม่มีรายการสินค้าในออเดอร์นี้
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="currentView === 'delivery'" class="admin-dashboard delivery-page" style="background: #f8f9fa; color: #333; min-height: calc(100vh - 80px); padding: 20px;">
+  <div class="container">
+    <div class="header-section">
+      <h2 class="admin-title"> แก้ไขวิธีจัดส่ง</h2>
+      <button class="modern-btn refresh-btn" (click)="loadAllOrdersForDelivery()">
+        <span class="btn-icon"></span>
+        รีเฟรชรายการ
+      </button>
+    </div>
+    <div class="modern-card stats-card" style="background: rgba(255, 255, 255, 0.95);   padding: 25px; margin-bottom: 25px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);">
+      <div class="card-header" style="margin-bottom: 25px;">
+        <h3 class="section-title" style="color: #000000; font-size: 1.5rem; font-weight: 700; margin: 0;">สถิติออเดอร์</h3>
+  <div class="stats-summary">รวม {{ allOrders.length }} ออเดอร์</div>
+      </div>
+      <div class="delivery-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div class="stat-card stat-pending" [class.highlighted]="getOrderCountByStatus('pending') > 0" style="  padding: 20px;  text-align: center;">
+          <div class="stat-icon" style="font-size: 2rem; margin-bottom: 10px;"></div>
+          <div class="stat-number" style="font-size: 2.5rem; font-weight: normal; color: black; margin-bottom: 8px;">{{ getOrderCountByStatus('pending') }}</div>
+          <div class="stat-label" style="color: black; font-size: 1rem; font-weight: 600; margin-bottom: 15px;">รอดำเนินการ</div>
+          <div class="stat-progress" style="width: 100%; height: 6px; background: #f0f0f0;  overflow: hidden;">
+            <div class="progress-bar" [style.width.%]="(getOrderCountByStatus('pending') / allOrders.length) * 100" style="height: 100%; background: #666666; transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+        <div class="stat-card stat-preparing" [class.highlighted]="getOrderCountByStatus('preparing') > 0" style="background: white; border: 1px solid #ddd; padding: 20px;  text-align: center;">
+          <div class="stat-icon" style="font-size: 2rem; margin-bottom: 10px;"></div>
+          <div class="stat-number" style="font-size: 2.5rem; font-weight: normal; color: black; margin-bottom: 8px;">{{ getOrderCountByStatus('preparing') }}</div>
+          <div class="stat-label" style="color: black; font-size: 1rem; font-weight: normal; margin-bottom: 15px;">กำลังจัดเตรียม</div>
+          <div class="stat-progress" style="width: 100%; height: 6px; background: #f0f0f0;  overflow: hidden;">
+            <div class="progress-bar" [style.width.%]="(getOrderCountByStatus('preparing') / allOrders.length) * 100" style="height: 100%; background: #666; transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+        <div class="stat-card stat-delivered" [class.highlighted]="getOrderCountByStatus('delivered') > 0" style="background: white; border: 1px solid #ddd; padding: 20px;  text-align: center;">
+          <div class="stat-icon" style="font-size: 2rem; margin-bottom: 10px;"></div>
+          <div class="stat-number" style="font-size: 2.5rem; font-weight: normal; color: black; margin-bottom: 8px;">{{ getOrderCountByStatus('delivered') }}</div>
+          <div class="stat-label" style="color: black; font-size: 1rem; font-weight: normal; margin-bottom: 15px;">จัดส่งแล้ว</div>
+          <div class="stat-progress" style="width: 100%; height: 6px; background: #f0f0f0;  overflow: hidden;">
+            <div class="progress-bar" [style.width.%]="(getOrderCountByStatus('delivered') / allOrders.length) * 100" style="height: 100%; background: #666; transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+        <div class="stat-card stat-cancelled" [class.highlighted]="getOrderCountByStatus('cancelled') > 0" style="background: white; border: 1px solid #ddd; padding: 20px;  text-align: center;">
+          <div class="stat-icon" style="font-size: 2rem; margin-bottom: 10px;"></div>
+          <div class="stat-number" style="font-size: 2.5rem; font-weight: normal; color: black; margin-bottom: 8px;">{{ getOrderCountByStatus('cancelled') }}</div>
+          <div class="stat-label" style="color: black; font-size: 1rem; font-weight: normal; margin-bottom: 15px;">ยกเลิก</div>
+          <div class="stat-progress" style="width: 100%; height: 6px; background: #f0f0f0;  overflow: hidden;">
+            <div class="progress-bar" [style.width.%]="(getOrderCountByStatus('cancelled') / allOrders.length) * 100" style="height: 100%; background: #666; transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modern-card order-management-card" style="background: white; border: 1px solid #ddd;  padding: 25px; margin-bottom: 25px;">
+      <div class="card-header" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="section-title" style="color: black; font-size: 1.5rem; font-weight: normal; margin: 0;"> จัดการสถานะออเดอร์</h3>
+        <div class="quick-actions">
+          <span class="help-text" style="color: black; font-size: 0.9rem; font-weight: normal;"> เลือกออเดอร์เพื่อเปลี่ยนสถานะ</span>
+        </div>
+      </div>
+      <div class="filter-section" style="background: white;  padding: 20px; margin-bottom: 20px; border: 1px solid #ddd;">
+        <label class="filter-label" style="color: black; font-weight: normal; font-size: 1.1rem; margin-bottom: 15px; display: block;"> กรองตามสถานะ:</label>
+        <div class="filter-buttons" style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <button class="filter-btn" 
+                  [class.active]="orderStatusFilter === 'all'"
+                  (click)="filterOrdersByStatus('all')"
+                  style="background: white; border: 1px solid #ddd; color: black; padding: 12px 20px;  font-weight: normal; cursor: pointer;">
+            <span class="filter-icon"></span>
+            ทั้งหมด
+            <span class="filter-count" style="background: #666; color: white; padding: 2px 8px;  margin-left: 8px; font-size: 0.85rem;">({{ allOrders.length }})</span>
+          </button>
+          <button class="filter-btn pending" 
+                  [class.active]="orderStatusFilter === 'pending'"
+                  (click)="filterOrdersByStatus('pending')"
+                  style="background: white; border: 1px solid #ddd; color: black; padding: 12px 20px;  font-weight: normal; cursor: pointer;">
+            <span class="filter-icon"></span>
+            รอดำเนินการ
+            <span class="filter-count" style="background: #666; color: white; padding: 2px 8px;  margin-left: 8px; font-size: 0.85rem;">({{ getOrderCountByStatus('pending') }})</span>
+          </button>
+          <button class="filter-btn preparing" 
+                  [class.active]="orderStatusFilter === 'preparing'"
+                  (click)="filterOrdersByStatus('preparing')"
+                  style="background: white; border: 1px solid #ddd; color: black; padding: 12px 20px;  font-weight: normal; cursor: pointer;">
+            <span class="filter-icon"></span>
+            กำลังจัดเตรียม
+            <span class="filter-count" style="background: #666; color: white; padding: 2px 8px;  margin-left: 8px; font-size: 0.85rem;">({{ getOrderCountByStatus('preparing') }})</span>
+          </button>
+          <button class="filter-btn delivered" 
+                  [class.active]="orderStatusFilter === 'delivered'"
+                  (click)="filterOrdersByStatus('delivered')"
+                  style="background: white; border: 1px solid #ddd; color: black; padding: 12px 20px;  font-weight: normal; cursor: pointer;">
+            <span class="filter-icon"></span>
+            จัดส่งแล้ว
+            <span class="filter-count" style="background: #666; color: white; padding: 2px 8px;  margin-left: 8px; font-size: 0.85rem;">({{ getOrderCountByStatus('delivered') }})</span>
+          </button>
+          <button class="filter-btn cancelled" 
+                  [class.active]="orderStatusFilter === 'cancelled'"
+                  (click)="filterOrdersByStatus('cancelled')"
+                  style="background: white; border: 1px solid #ddd; color: black; padding: 12px 20px;  font-weight: normal; cursor: pointer;">
+            <span class="filter-icon"></span>
+            ยกเลิก
+            <span class="filter-count" style="background: #666; color: white; padding: 2px 8px;  margin-left: 8px; font-size: 0.85rem;">({{ getOrderCountByStatus('cancelled') }})</span>
+          </button>
+        </div>
+      </div>
+      <div class="order-selection-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 20px; align-items: start; margin-bottom: 30px;">
+        <div class="form-group">
+          <label class="form-label" style="color: black; font-weight: normal; font-size: 1rem; margin-bottom: 8px; display: block; height: 24px;">
+            <span class="label-icon"></span>
+            เลือกออเดอร์
+          </label>
+          <select [(ngModel)]="selectedOrderForStatusUpdate" 
+                  class="form-select order-select" style="background: white; border: 1px solid #ddd; color: black; padding: 12px 16px; font-size: 1rem; width: 100%; height: 48px;">
+            <option [ngValue]="null">เลือกออเดอร์ที่ต้องการจัดการ</option>
+            <option *ngFor="let order of getFilteredOrders()" [ngValue]="order">
+               {{ order.order_id }} -  {{ order.customer_name || order.username }} 
+              ({{ getStatusText(order.status) }})
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="color: black; font-weight: normal; font-size: 1rem; margin-bottom: 8px; display: block; height: 24px;">
+            <span class="label-icon"></span>
+            สถานะปัจจุบัน
+          </label>
+          <div class="current-status-display" 
+               [ngClass]="'status-' + (selectedOrderForStatusUpdate?.status || 'none')"
+               style="background: white; border: 1px solid #ddd; padding: 12px 16px; color: black; font-weight: normal; height: 48px; display: flex; align-items: center;">
+            <span class="status-icon">
+              {{ selectedOrderForStatusUpdate?.status === 'pending' ? '' : 
+                 selectedOrderForStatusUpdate?.status === 'preparing' ? '' :
+                 selectedOrderForStatusUpdate?.status === 'delivered' ? '' :
+                 selectedOrderForStatusUpdate?.status === 'cancelled' ? '' : '' }}
+            </span>
+            {{ selectedOrderForStatusUpdate ? getStatusText(selectedOrderForStatusUpdate.status) : 'ไม่ได้เลือก' }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="color: black; font-weight: normal; font-size: 1rem; margin-bottom: 8px; display: block; height: 24px;">
+            <span class="label-icon"></span>
+            สถานะใหม่
+          </label>
+          <select [(ngModel)]="selectedOrderStatus" 
+                  [disabled]="selectedOrderForStatusUpdate?.status === 'delivered'"
+                  class="form-select status-select" 
+                  style="background: white; border: 1px solid #ddd; color: black; padding: 12px 16px; font-size: 1rem; width: 100%; height: 48px;"
+                  [style.opacity]="selectedOrderForStatusUpdate?.status === 'delivered' ? '0.5' : '1'"
+                  [style.cursor]="selectedOrderForStatusUpdate?.status === 'delivered' ? 'not-allowed' : 'pointer'">
+            <option value="pending"> รอดำเนินการ</option>
+            <option value="preparing"> กำลังจัดเตรียมสินค้า</option>
+            <option value="delivered"> จัดส่งแล้ว</option>
+            <option value="cancelled"> ยกเลิก</option>
+          </select>
+          <small *ngIf="selectedOrderForStatusUpdate?.status === 'delivered'" 
+                 style="color: #f44336; font-size: 0.85rem; margin-top: 5px; display: block; min-height: 20px;">
+            ⚠️ ออเดอร์ที่จัดส่งแล้วไม่สามารถเปลี่ยนสถานะได้
+          </small>
+          <small *ngIf="!selectedOrderForStatusUpdate || selectedOrderForStatusUpdate?.status !== 'delivered'" 
+                 style="display: block; min-height: 20px; margin-top: 5px;">
+            &nbsp;
+          </small>
+        </div>
+        <div class="form-group">
+          <label class="form-label invisible" style="opacity: 0; height: 24px; margin-bottom: 8px; display: block;">อัพเดต</label>
+          <button class="update-status-btn" 
+                  [disabled]="!selectedOrderForStatusUpdate || selectedOrderForStatusUpdate?.status === 'delivered'"
+                  (click)="updateOrderStatusInDelivery()"
+                  style="background: #666; color: white; border: none; padding: 12px 24px; font-weight: normal; cursor: pointer; font-size: 1rem; height: 48px; display: flex; align-items: center; justify-content: center;"
+                  [style.opacity]="(!selectedOrderForStatusUpdate || selectedOrderForStatusUpdate?.status === 'delivered') ? '0.5' : '1'"
+                  [style.cursor]="(!selectedOrderForStatusUpdate || selectedOrderForStatusUpdate?.status === 'delivered') ? 'not-allowed' : 'pointer'">
+            <span class="btn-icon"></span>
+            อัพเดตสถานะ
+          </button>
+        </div>
+      </div>
+      <div *ngIf="selectedOrderForStatusUpdate" class="order-details-card">
+        <div class="details-header">
+          <h4 class="details-title">
+            <span class="title-icon"></span>
+            รายละเอียดออเดอร์
+          </h4>
+          <div class="order-id-badge">
+            Order #{{ selectedOrderForStatusUpdate.order_id }}
+          </div>
+        </div>
+        <div class="order-details-grid">
+          <div class="detail-item">
+            <div class="detail-label">
+              Order ID
+            </div>
+            <div class="detail-value">{{ selectedOrderForStatusUpdate.order_id }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">
+              ลูกค้า
+            </div>
+            <div class="detail-value">{{ selectedOrderForStatusUpdate.customer_name || selectedOrderForStatusUpdate.username }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">
+              เบอร์โทรศัพท์
+            </div>
+            <div class="detail-value">{{ selectedOrderForStatusUpdate.final_phone || selectedOrderForStatusUpdate.user_phone || selectedOrderForStatusUpdate.phone || 'ไม่ระบุ' }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">
+              วันที่สั่ง
+            </div>
+            <div class="detail-value">{{ formatDate(selectedOrderForStatusUpdate.order_date) }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">
+              วิธีชำระ
+            </div>
+            <div class="detail-value center">{{ selectedOrderForStatusUpdate.payment_method }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">
+              สถานะชำระ
+            </div>
+            <div class="detail-value">
+              <span class="payment-status" 
+                    [ngClass]="selectedOrderForStatusUpdate.payment_status === 'paid' ? 'paid' : (selectedOrderForStatusUpdate.payment_proof ? 'checking' : 'unpaid')">
+                <span *ngIf="selectedOrderForStatusUpdate.payment_status === 'paid'">✅ ชำระแล้ว</span>
+                <span *ngIf="selectedOrderForStatusUpdate.payment_status !== 'paid' && selectedOrderForStatusUpdate.payment_proof">📎 แนบสลิปแล้ว</span>
+                <span *ngIf="selectedOrderForStatusUpdate.payment_status !== 'paid' && !selectedOrderForStatusUpdate.payment_proof">⏳ ยังไม่ชำระ</span>
+              </span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">
+              สถานะออเดอร์
+            </div>
+            <div class="detail-value">
+              <span class="order-status" 
+                    [ngClass]="'status-' + selectedOrderForStatusUpdate.status">
+                {{ getStatusText(selectedOrderForStatusUpdate.status) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="orderStatusFilter !== 'all' || getFilteredOrders().length > 0" class="modern-card orders-list-card" style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(33, 150, 243, 0.2);  padding: 25px; margin-bottom: 25px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);">
+      <div class="card-header" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="section-title" style="color: #000000; font-size: 1.5rem; font-weight: 700; margin: 0;">
+          <span class="section-icon"></span>
+          รายการออเดอร์ - {{ getStatusText(orderStatusFilter) }}
+        </h3>
+        <div class="orders-count-badge" style="background: #ffffff; color: #000000; padding: 8px 16px; font-weight: 600; font-size: 0.9rem; border: 1px solid #e5e7eb;">
+          {{ getFilteredOrders().length }} รายการ
+        </div>
+      </div>
+      <div *ngIf="getFilteredOrders().length === 0" class="empty-state" style="text-align: center; padding: 40px 20px; color: #666;">
+        <div class="empty-icon" style="font-size: 4rem; margin-bottom: 20px;">📭</div>
+        <div class="empty-title" style="font-size: 1.3rem; font-weight: 700; color: #2196F3; margin-bottom: 10px;">ไม่มีออเดอร์ในสถานะนี้</div>
+        <div class="empty-subtitle" style="font-size: 1rem; color: #999;">ลองเปลี่ยนตัวกรองเพื่อดูออเดอร์อื่น</div>
+      </div>
+      <div class="orders-list" style="display: grid; gap: 15px;">
+        <div *ngFor="let order of getFilteredOrders(); let i = index" 
+             class="order-card"
+             [ngClass]="'status-' + order.status"
+             (click)="selectOrderForUpdate(order)"
+             style="   padding: 20px; cursor: pointer; transition: all 0.3s ease; ">
+          <div class="order-card-content">
+            <div class="order-main-info" style="margin-bottom: 15px;">
+              <div class="order-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="order-id" style="font-size: 1.2rem; font-weight: 700; color: #374151;">
+                  Order #{{ order.order_id }}
+                </div>
+                <div class="order-status-badge" 
+                     [ngClass]="'badge-' + order.status"
+                     style="display:none; padding: 6px 12px;  font-size: 0.85rem; font-weight: 600;"
+                     [style.background]="order.status === 'pending' ? '#fff3e0' : 
+                                       order.status === 'preparing' ? '#e3f2fd' :
+                                       order.status === 'delivered' ? '#e8f5e8' :
+                                       order.status === 'cancelled' ? '#ffebee' : '#f5f5f5'"
+                     [style.color]="order.status === 'pending' ? '#ff9800' : 
+                                  order.status === 'preparing' ? '#2196F3' :
+                                  order.status === 'delivered' ? '#4CAF50' :
+                                  order.status === 'cancelled' ? '#f44336' : '#666'">
+                  {{ getStatusText(order.status) }}
+                </div>
+              </div>
+              <div class="order-customer" style="color: #666; font-size: 1rem; margin-bottom: 5px;">
+                {{ order.customer_name || order.username }}
+              </div>
+              <div class="order-date" style="color: #666; font-size: 0.9rem;">
+                {{ formatDate(order.order_date) }}
+              </div>
+            </div>
+            <div class="order-payment-info" style="display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 16px; margin-bottom: 10px;">
+              <div class="order-status-badge" 
+                   [ngClass]="'badge-' + order.status"
+                   style="padding: 6px 12px;  font-size: 0.85rem; font-weight: 600;">
+                {{ getStatusText(order.status) }}
+              </div>
+              <div class="payment-method" style="color: #666; font-size: 0.9rem;">
+                {{ order.payment_method }}
+              </div>
+              <div class="payment-status" 
+                   [ngClass]="order.payment_status === 'paid' ? 'paid' : 'unpaid'"
+                   style="padding: 4px 10px;  font-size: 0.8rem; font-weight: 600;"
+                   [style.background]="order.payment_status === 'paid' ? '#e8f5e8' : '#fff3e0'"
+                   [style.color]="order.payment_status === 'paid' ? '#4CAF50' : '#ff9800'">
+                {{ order.payment_status === 'paid' ? 'ชำระแล้ว' : 'ยังไม่ชำระ' }}
+              </div>
+              <div class="inline-action" (click)="selectOrderForUpdate(order); $event.stopPropagation()" style="color: #2196F3; font-size: 0.9rem; font-weight: 600; cursor: pointer; justify-self: end;">
+                คลิกเพื่อจัดการ
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Stock Items Management View -->
+<div *ngIf="currentView === 'stock'" class="admin-dashboard" style="background: #f8f9fa; color: #333; min-height: calc(100vh - 80px); padding: 20px;">
+  <div class="container">
+    <div class="header-section">
+      <h2 class="admin-title"> จัดการสต็อกสินค้า</h2>
+      <button class="modern-btn" (click)="showAddStockItemForm()">
+        <span class="btn-icon"></span>
+        เพิ่ม Stock Item ใหม่
+      </button>
+    </div>
+
+    <!-- Stock Items Table -->
+    <div *ngIf="!showStockItemForm" class="modern-card">
+      <div class="card-header">
+        <h3 class="section-title"> รายการ Stock Items ทั้งหมด</h3>
+        <div class="product-count">{{ allStockItems.length }} รายการ</div>
+      </div>
+      <div class="table-container">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th class="text-center">รหัสสต็อก</th>
+              <th class="text-center">รหัสสินค้า</th>
+              <th class="text-center">ชื่อสินค้า</th>
+              <th class="text-center">รูปภาพ</th>
+              <th class="text-center">จำนวน</th>
+              <th class="text-center">Lot Number</th>
+              <th class="text-center">วันหมดอายุ</th>
+              <th class="text-center">ตำแหน่งจัดเก็บ</th>
+              <th class="text-center">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stockItem of allStockItems">
+              <td>{{ stockItem.stockitem_id }}</td>
+              <td>{{ stockItem.product_id }}</td>
+              <td class="product-name" style="color: #333; font-weight: 600;">{{ stockItem.product_name || getProductName(stockItem.product_id) }}</td>
+              <td class="text-center">
+                <div *ngIf="stockItem.product_image || getProductById(stockItem.product_id)?.product_image; else noImageTemplate" class="product-image-container">
+                  <img [src]="getImageUrl(stockItem.product_image || getProductById(stockItem.product_id)?.product_image)" 
+                       [alt]="stockItem.product_name"
+                       class="product-image"
+                       (error)="onImageError($event)"
+                       (load)="onImageLoad($event)">
+                </div>
+                <ng-template #noImageTemplate>
+                  <div class="no-image-placeholder">
+                    <span>ไม่มีรูป</span>
+                  </div>
+                </ng-template>
+              </td>
+              <td class="text-center">{{ getProductById(stockItem.product_id)?.quantity || 0 }}</td>
+              <td>{{ stockItem.lot_number || '-' }}</td>
+              <td>{{ stockItem.expiry_date ? (stockItem.expiry_date | date:'dd/MM/yyyy') : '-' }}</td>
+              <td>{{ stockItem.storage_location || '-' }}</td>
+              <td class="text-center">
+                <div class="action-buttons">
+                  <button class="action-btn edit-btn" (click)="editStockItem(stockItem)">               
+                    แก้ไข
+                  </button>
+                  <button class="action-btn delete-btn" (click)="deleteStockItem(stockItem.stockitem_id)">          
+                    ลบ
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Stock Item Form -->
+    <div *ngIf="showStockItemForm" class="modern-card product-form">
+      <div class="card-header">
+        <h3 class="section-title">{{ isEditModeStockItem ? ' แก้ไข Stock Item' : ' เพิ่ม Stock Item ใหม่' }}</h3>
+        <button class="cancel-btn" (click)="cancelStockItemForm()">✕ ยกเลิก</button>
+      </div>
+      <form (ngSubmit)="saveStockItem()" class="product-form-grid">
+        <div class="form-group" *ngIf="isEditModeStockItem">
+          <label class="form-label">รหัสสต็อก (Stock Item ID) <span style="color: red;">*</span></label>
+          <input type="text" 
+                 [(ngModel)]="stockItemForm.stockitem_id" 
+                 name="stockitem_id" 
+                 disabled
+                 required
+                 class="form-input disabled"
+                 placeholder="SI001">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">รหัสสินค้า (Product ID) <span style="color: red;">*</span></label>
+          <select [(ngModel)]="stockItemForm.product_id" 
+                  name="product_id" 
+                  required
+                  class="form-select"
+                  (change)="onProductSelect()">
+            <option value="">เลือกสินค้า</option>
+            <option *ngFor="let product of allProducts" [value]="product.product_id">
+              {{ product.product_id }} - {{ product.product_name }} (คงเหลือ: {{ product.quantity }})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">จำนวน <span style="color: red;">*</span></label>
+          <input type="number" 
+                 [(ngModel)]="stockItemForm.quantity" 
+                 name="quantity" 
+                 min="0" 
+                 required
+                 class="form-input"
+                 placeholder="กรอกจำนวนสินค้า">
+          <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">
+            * การเปลี่ยนจำนวนจะอัพเดทในตารางสินค้าและ Stock Items ทั้งหมดที่เกี่ยวข้อง
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Lot Number <span style="color: red;">*</span></label>
+          <input type="text" 
+                 [(ngModel)]="stockItemForm.lot_number" 
+                 name="lot_number"
+                 required
+                 class="form-input"
+                 placeholder="LOT2510-001">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">วันหมดอายุ <span style="color: red;">*</span></label>
+          <input type="date" 
+                 [(ngModel)]="stockItemForm.expiry_date" 
+                 name="expiry_date"
+                 required
+                 class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">ตำแหน่งจัดเก็บ <span style="color: red;">*</span></label>
+          <input type="text" 
+                 [(ngModel)]="stockItemForm.storage_location" 
+                 name="storage_location"
+                 required
+                 class="form-input"
+                 placeholder="F1-S1-L1">
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" 
+                  class="submit-btn"
+                  [disabled]="!stockItemForm.product_id || stockItemForm.quantity === null || stockItemForm.quantity === undefined || !stockItemForm.lot_number || !stockItemForm.expiry_date || !stockItemForm.storage_location">
+            <span class="btn-icon">{{ isEditModeStockItem ? '' : '' }}</span>
+            {{ isEditModeStockItem ? 'บันทึกการแก้ไข' : 'เพิ่ม Stock Item' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

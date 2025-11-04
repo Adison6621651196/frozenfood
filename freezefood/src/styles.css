@@ -1,0 +1,370 @@
+:root {
+  --primary-blue: #1a73e8; /* Brand blue to match screenshot */
+  --primary-blue-light: #4dabf7;
+  --primary-blue-dark: #1769e0;
+  --secondary-orange: #f4a261;
+  --secondary-orange-light: #f6b784;
+  --secondary-orange-dark: #e76f51;
+  --white: #ffffff;
+  --light-gray: #f8f9fa;
+  --medium-gray: #e9ecef;
+  --border-gray: #dee2e6;
+  --text-gray: #6c757d;
+  --dark-gray: #495057;
+  --success-green: #52b788;
+  --warning-yellow: #ffd60a;
+  --danger-red: #e63946;
+  
+  
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --shadow-xl: 0 12px 32px rgba(0,0,0,0.15);
+  
+  
+  
+  
+  
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Use Kanit as the app's primary font, with sensible fallbacks */
+body {
+  font-family: 'Kanit', 'Inter', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--white); /* plain white for a clean minimal look */
+  color: #0f172a; /* primary text color */
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 500; /* globally slightly bolder */
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.45;
+  font-size: 16px;
+}
+
+/* Global font and base styles */
+html, body {
+  height: 100%;
+}
+
+/* Ensure form controls, buttons and inputs inherit the app font */
+input, textarea, select, button, a, label {
+  font-family: inherit;
+}
+
+/* Modern typographic scale */
+:root {
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
+  --font-size-lg: 18px;
+  --h1: 2.25rem; /* 36px */
+  --h2: 1.75rem; /* 28px */
+  --h3: 1.25rem; /* 20px */
+  --h4: 1.125rem; /* 18px */
+  --h5: 1rem; /* 16px */
+  --h6: 0.95rem; /* 15px */
+}
+
+html { font-size: var(--font-size-base); }
+
+h1 { font-size: var(--h1); letter-spacing: -0.02em; }
+h2 { font-size: var(--h2); letter-spacing: -0.01em; }
+h3 { font-size: var(--h3); }
+h4 { font-size: var(--h4); }
+h5 { font-size: var(--h5); }
+h6 { font-size: var(--h6); }
+
+
+/* Button and input typography tweaks */
+.btn, button, input, select, textarea {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Subtle caps for small labels */
+.label-small { text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.06em; }
+
+/* Large-screen (1440px+) adjustments */
+@media (min-width: 1440px) {
+  :root {
+    --spacing-lg: 2.5rem;
+    --font-size-base: 17px;
+    --h1: 2.6rem; /* ~42px */
+    --h2: 2.0rem; /* ~32px */
+  }
+  html { font-size: var(--font-size-base); }
+  .container { max-width: 1400px; }
+  h1 { font-size: var(--h1); }
+  h2 { font-size: var(--h2); }
+  .page-section { padding: 48px 0; }
+  /* Increase product image size on wide screens */
+  .product-image, .ff-product-image img, .card img { height: 220px; }
+  /* Make featured grid show 3 columns on very wide screens if available */
+  .featured-products-grid { grid-template-columns: repeat(3, 1fr); }
+  .categories-grid { grid-template-columns: repeat(3, 1fr); }
+  /* Slightly increase card padding */
+  .ff-card, .card, .product-card { padding: 18px; }
+}
+
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 10px 18px;
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  border: 1px solid var(--border-gray);
+  background: transparent;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 180ms ease, transform 120ms ease;
+}
+
+.btn-primary {
+  background: var(--primary-blue);
+  color: var(--white);
+  border-color: transparent;
+  box-shadow: none; /* flatter look */
+}
+
+/* Project-specific button classes (use ff-btn in templates) */
+/* Removed project-specific .ff-btn rules in favor of Bootstrap's button classes.
+   Use Bootstrap utility classes like:
+     - btn btn-primary, btn btn-secondary, btn btn-danger
+     - btn-sm
+     - w-100 (for full-width)
+   For outline buttons use btn-outline-primary or btn-outline-secondary.
+*/
+
+
+
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Minimal card style used across the app */
+.ff-card, .card, .product-card {
+  background: var(--white);
+  border: 1px solid var(--border-gray);
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+}
+
+/* Product image sizing for consistent layout */
+.product-image,
+.ff-product-image img,
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  display: block;
+}
+
+/* Reduce visual noise on inputs */
+input, textarea, select {
+  border: 1px solid var(--border-gray);
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  padding: 8px 10px;
+  background: #ffffff;
+}
+
+/* Utility: subtle muted text */
+.muted {
+  color: var(--dark-gray);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Make containers slightly more airy */
+.page-section {
+  padding: 24px 0;
+}
+
+/* Stronger typography for headings and important labels */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: #0b1220;
+}
+
+/* Card titles and product titles should be more prominent */
+.card .card-title, .product-card .title, .ff-card .title {
+  font-weight: 700;
+  color: #0b1220;
+  font-size: 1.02rem;
+}
+
+.card .card-meta, .product-card .meta {
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Badges and status labels get stronger weight */
+.badge, .status-badge, .order-status {
+  font-weight: 700;
+  color: #071130;
+}
+
+/* Helpers for forcing bold values used in order details */
+.strong, .value, .order-value, .order-id {
+  font-weight: 700;
+  color: #0b4db1; /* keep ids/values readable and slightly colored */
+}
+
+/* Slightly increase contrast for small caption text */
+small, .caption {
+  color: #334155;
+  font-weight: 600;
+}
+
+/* Muted status badges and small labels */
+.badge, .status-badge, .order-status {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #0f172a;
+  background: #f8fafc; /* very light neutral */
+  border: 1px solid var(--border-gray);
+}
+
+/* Specific status colors are now soft and subtle */
+.status-pending { background: #fff7ed; color: #92400e; border-color: #fde3bf; }
+.status-preparing { background: #eef2ff; color: #3730a3; border-color: #dbe4ff; }
+.status-delivered { background: #ecfdf5; color: #065f46; border-color: #c6f6d5; }
+.status-cancelled { background: #fff1f2; color: #831843; border-color: #ffd6de; }
+
+/* Action buttons smaller and less prominent */
+.action-btn {
+  padding: 8px 12px;
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  font-size: 0.9rem;
+  border: 1px solid var(--border-gray);
+  background: transparent;
+  color: #0f172a;
+}
+.action-btn.danger {
+  background: #fee2e2; color: #991b1b; border-color: #fca5a5;
+}
+.action-btn.primary {
+  background: #e6f0ff; color: #0b4db1; border-color: #cfe0ff;
+}
+
+/* Reduce prominence of icons and captions inside cards */
+.card .card-title, .product-card .title {
+  font-weight: 600;
+  color: #0f172a;
+}
+.card .card-meta, .product-card .meta {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+}
+
+/* Small helpers to center tiny status blocks like in the screenshot */
+.status-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  background: #ffffff;
+  border: 1px solid var(--border-gray);
+}
+
+/* Toast container (centered, full-width up to max) */
+.ff-toast-container {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  z-index: 99999;
+  pointer-events: none;
+}
+.ff-toast {
+  pointer-events: auto;
+  width: auto;
+  min-width: 220px;
+  background: #ffffff; /* subtle white card */
+  color: #0b1220;
+  padding: 10px 14px;
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 18px rgba(11,18,32,0.06);
+  border: 1px solid rgba(15,23,36,0.06);
+  font-weight: 600;
+}
+.ff-toast.success { border-left: 4px solid rgba(34,197,94,0.15); }
+.ff-toast.info { border-left: 4px solid rgba(59,130,246,0.12); }
+.ff-toast.error { border-left: 4px solid rgba(239,68,68,0.12); }
+.ff-toast .ff-icon {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  background: transparent;
+  color: #0b1220;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+.ff-toast .ff-msg { flex: 1 1 auto; font-size: 0.95rem; color: #0b1220; }
+.ff-toast .ff-close { background: transparent; border: none; color: rgba(11,18,32,0.45); font-size: 0.95rem; cursor: pointer; }
+/* Confirm modal styles */
+.ff-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11,18,32,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+}
+.ff-confirm-dialog {
+  width: 420px;
+  max-width: calc(100% - 48px);
+  background: #0b1220;
+  color: #fff;
+  border-radius: 0; /* เปลี่ยนเป็นสี่เหลี่ยม */
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-weight: 600;
+}
+.ff-confirm-title { font-size: 1.05rem; font-weight: 700; }
+.ff-confirm-message { color: rgba(255,255,255,0.9); font-size: 0.98rem; }
+.ff-confirm-actions { display:flex; gap:8px; justify-content: flex-end; margin-top: 6px; }
+.ff-confirm-btn { padding: 8px 14px; border-radius: 0; border: none; cursor: pointer; font-weight: 700; } /* เปลี่ยนเป็นสี่เหลี่ยม */
+.ff-confirm-cancel { background: transparent; color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.08); }
+.ff-confirm-ok { background: #4f46e5; color: white; }
+
+

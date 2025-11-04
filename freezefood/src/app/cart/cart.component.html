@@ -1,0 +1,396 @@
+<style>
+.ff-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.ff-modal-backdrop {
+  position: absolute; inset: 0; background: rgba(2,6,23,0.6);
+}
+.ff-modal-dialog {
+  position: relative; z-index: 10000; max-width: 520px; width: 90%; background: #0f1724; color: #fff; padding: 22px; border-radius: 0; box-shadow: 0 20px 50px rgba(2,6,23,0.6);
+}
+.ff-modal-title { font-size: 1.1rem; margin: 0 0 10px 0; color: #e6edf8; }
+.ff-modal-message { color: #cbd5e1; margin-bottom: 18px; }
+.ff-modal-actions { display:flex; gap:12px; justify-content:flex-end; }
+.ff-modal .btn { border-radius: 0; padding: 10px 18px; }
+.ff-modal .btn-outline { background: transparent; color: #cbd5e1; border: 1px solid rgba(203,213,225,0.12); }
+
+.cart-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px;
+  font-family: inherit;
+  background: #ffffff; /* force white background for the cart */
+  color: #0f1724; /* dark text for contrast */
+}
+.cart-header {
+  background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+  color: rgb(255, 255, 255);
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(33, 150, 243, 0.3);
+}
+.cart-title {
+  font-size: 2.5em;
+  margin: 0;
+  font-weight: 600;
+  color: #ffffff; /* ensure title is white on the blue header (overrides global h1 rule) */
+}
+.cart-title i {
+  margin-right: 15px;
+  color: #ffffff;
+}
+.cart-subtitle {
+  font-size: 1.2em;
+  margin: 10px 0 0 0;
+  opacity: 0.9;
+  color: rgba(255,255,255,0.95); /* subtitle should also be readable on the gradient */
+}
+.empty-cart {
+  text-align: center;
+  padding: 80px 20px;
+  background: #ffffff; /* white when empty */
+  margin: 20px 0;
+}
+.empty-cart-content {
+  max-width: 400px;
+  margin: 0 auto;
+}
+.empty-icon {
+  font-size: 4em;
+  color: #9ca3af; /* subtle gray */
+  margin-bottom: 20px;
+}
+.empty-cart h2 {
+  color: #555;
+  margin-bottom: 15px;
+}
+.empty-cart p {
+  color: #777;
+  margin-bottom: 25px;
+  font-size: 1.1em;
+}
+.cart-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  align-items: start;
+  background: #ffffff; /* ensure summary and list sit on white */
+  color: #0b1220;
+}
+.cart-items {
+  background: #ffffff;
+  padding: 25px;
+  box-shadow: none;
+}
+.cart-item {
+  display: grid;
+  grid-template-columns: 140px 2fr auto auto auto;
+  gap: 25px;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  transition: all 0.3s ease;
+  background: transparent;
+  color: #0f1724;
+  margin-bottom: 15px;
+  box-shadow: none;
+}
+.cart-item:last-child {
+  border-bottom: none;
+}
+.item-image {
+  flex-shrink: 0;
+  margin-right: 15px;
+}
+.item-image img {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border: 3px solid #e3f2fd;
+  box-shadow: 0 6px 18px rgba(33, 150, 243, 0.15);
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+.item-details {
+  padding: 0 10px;
+}
+.item-name {
+  font-size: 1.3em;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+.item-description {
+  color: #666;
+  margin: 0 0 8px 0;
+  font-size: 0.95em;
+}
+.item-price {
+  color: #2196F3;
+  font-weight: 600;
+  font-size: 1.1em;
+  margin: 0;
+}
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8f9ff;
+  padding: 8px 12px;
+  border: 2px solid #e0e6ff;
+}
+.quantity {
+  font-weight: 600;
+  font-size: 1.1em;
+  min-width: 30px;
+  text-align: center;
+  color: #333;
+}
+.item-total {
+  text-align: right;
+}
+.total-price {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+.btn {
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  background: var(--primary-blue); /* use defined primary color to ensure visibility */
+  color: #fff;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+  color: white;
+}
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
+.btn-outline {
+  background: white;
+  color: #2196F3;
+  border: 2px solid #2196F3;
+}
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.9em;
+}
+.btn-full {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.w-100 { width: 100%; }
+.btn-checkout {
+  background: #56ab2f;
+  font-size: 1.1em;
+  padding: 15px;
+  margin-top: 10px;
+}
+.cart-summary {
+  position: sticky;
+  top: 20px;
+}
+.summary-card {
+  background: #ffffff;
+  color: #0f1724;
+  padding: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #2196F3;
+}
+.summary-card h3 {
+  color: #333;
+  margin: 0 0 20px 0;
+  font-size: 1.4em;
+  text-align: center;
+}
+.summary-details {
+  margin-bottom: 25px;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 1em;
+}
+.summary-row.subtotal {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #333;
+}
+.summary-row.shipping .free {
+  color: #1a73e8;
+  font-weight: 600;
+}
+.summary-row.total {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: #2c3e50;
+  border-top: 2px solid #eee;
+  padding-top: 15px;
+  margin-top: 10px;
+}
+hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 15px 0;
+}
+/* Layout for the stacked action buttons in the summary card */
+.cart-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* space between buttons */
+}
+
+</style>
+<div class="cart-container">
+  <div class="cart-header">
+    <h1 class="cart-title">
+      <i class="fas fa-shopping-cart"></i>
+      ตระกร้าสินค้า
+    </h1>
+    <p class="cart-subtitle">จำนวนสินค้า: {{ cartItems.length }} รายการ</p>
+  </div>
+  <div *ngIf="cartItems.length === 0" class="empty-cart">
+    <div class="empty-cart-content">
+      <i class="fas fa-shopping-cart empty-icon"></i>
+      <h2>ตระกร้าสินค้าของคุณว่างเปล่า</h2>
+      <p>เลือกซื้อสินค้าแช่แข็งคุณภาพดีจากเรา</p>
+  <button class="btn btn-primary" (click)="continueShopping()">
+        <i class="fas fa-arrow-left"></i>
+        เลือกซื้อสินค้า
+      </button>
+    </div>
+  </div>
+  <div *ngIf="cartItems.length > 0" class="cart-content">
+    <div class="cart-items">
+      <div *ngFor="let item of cartItems" class="cart-item">
+        <div class="item-image">
+          <img [src]="item.image" [alt]="item.product_name" (error)="onImageError($event)" loading="lazy">
+        </div>
+        <div class="item-details">
+          <h3 class="item-name">{{ item.product_name }}</h3>
+          <p class="item-description">หมวดหมู่: {{ item.category || 'ไม่ระบุ' }}</p>
+          <p class="item-price">{{ item.price | currency:'THB':'symbol':'1.0-0' }} บาท</p>
+        </div>
+        <div class="quantity-controls">
+          <button class="btn btn-sm btn-outline-secondary" (click)="decreaseQuantity(item)">
+            <i class="fas fa-minus"></i>
+          </button>
+          <span class="quantity">{{ item.quantity }}</span>
+          <button class="btn btn-sm btn-outline-secondary" (click)="increaseQuantity(item)">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+        <div class="item-total">
+          <p class="total-price">{{ (item.price * item.quantity) | currency:'THB':'symbol':'1.0-0' }} บาท</p>
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-danger btn-sm" (click)="removeItem(item.product_id)" title="ลบสินค้า">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="cart-summary">
+      <div class="summary-card">
+        <h3>สรุปการสั่งซื้อ</h3>
+        
+        <!-- แจ้งเตือนให้ล็อกอินถ้ายังไม่ได้ล็อกอิน -->
+        <div *ngIf="!isLoggedIn" style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+            <i class="fas fa-exclamation-triangle" style="color: #ff9800; font-size: 1.2em;"></i>
+            <strong style="color: #856404;">กรุณาเข้าสู่ระบบ</strong>
+          </div>
+          <p style="margin: 0 0 12px 0; color: #856404; font-size: 0.95em; line-height: 1.5;">
+            คุณต้องเข้าสู่ระบบก่อนทำการสั่งซื้อสินค้า
+          </p>
+          <button class="btn btn-primary w-100" (click)="goToLogin()" style="background: #ff9800; border: none;">
+            <i class="fas fa-sign-in-alt"></i>
+            เข้าสู่ระบบ / สมัครสมาชิก
+          </button>
+        </div>
+        
+        <div class="summary-details">
+          <div class="summary-row">
+            <span>จำนวนสินค้า:</span>
+            <span>{{ getTotalItems() }} รายการ</span>
+          </div>
+          <div class="summary-row">
+            <span>จำนวนชิ้นทั้งหมด:</span>
+            <span>{{ getTotalQuantity() }} ชิ้น</span>
+          </div>
+          <div class="summary-row subtotal">
+            <span>ราคารวม:</span>
+            <span>{{ getTotalPrice() | currency:'THB':'symbol':'1.0-0' }} บาท</span>
+          </div>
+          <div class="summary-row shipping">
+            <span>ค่าจัดส่ง:</span>
+            <span class="free">ฟรี</span>
+          </div>
+          <hr>
+          <div class="summary-row total">
+            <span>ยอดรวมทั้งสิ้น:</span>
+            <span>{{ getTotalPrice() | currency:'THB':'symbol':'1.0-0' }} บาท</span>
+          </div>
+        </div>
+        <div class="cart-actions">
+          <button class="btn btn-outline-primary w-100" (click)="continueShopping()">
+            <i class="fas fa-arrow-left"></i>
+            เลือกซื้อสินค้าเพิ่ม
+          </button>
+          <button class="btn btn-secondary w-100" (click)="clearCart()">
+            <i class="fas fa-trash"></i>
+            ล้างตระกร้า
+          </button>
+          <button 
+            class="btn btn-primary btn-checkout w-100" 
+            (click)="checkout()"
+            [disabled]="!isLoggedIn"
+            [title]="!isLoggedIn ? 'กรุณาเข้าสู่ระบบก่อนสั่งซื้อ' : ''">
+            <i class="fas fa-credit-card"></i>
+            ดำเนินการสั่งซื้อ
+            <span *ngIf="!isLoggedIn" style="font-size: 0.85em; display: block; margin-top: 4px;">
+              (กรุณาเข้าสู่ระบบ)
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation modal -->
+<div class="ff-modal" *ngIf="showConfirm">
+  <div class="ff-modal-backdrop" (click)="confirmNo()"></div>
+  <div class="ff-modal-dialog">
+    <h3 class="ff-modal-title">{{ confirmTitle }}</h3>
+    <p class="ff-modal-message">{{ confirmMessage }}</p>
+    <div class="ff-modal-actions">
+      <button class="btn btn-primary" (click)="confirmYes()">ตกลง</button>
+      <button class="btn btn-outline" (click)="confirmNo()">ยกเลิก</button>
+    </div>
+  </div>
+</div>

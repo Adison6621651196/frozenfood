@@ -1,0 +1,224 @@
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h1 class="checkout-title">
+      <i class="fas fa-credit-card"></i>
+      ชำระเงิน
+    </h1>
+    <p class="checkout-subtitle">กรุณากรอกข้อมูลและเลือกวิธีชำระเงิน</p>
+  </div>
+  <div class="checkout-content">
+    <div class="customer-info-card">
+      <h3 class="section-title">
+        <i class="fas fa-user"></i>
+        ข้อมูลลูกค้า
+        <span *ngIf="isLoggedIn" class="login-status">
+          <i class="fas fa-check-circle"></i>
+          เข้าสู่ระบบแล้ว
+        </span>
+        <span *ngIf="!isLoggedIn" class="login-status guest">
+          <i class="fas fa-user-plus"></i>
+          ลูกค้าทั่วไป
+        </span>
+      </h3>
+      <div *ngIf="isLoggedIn && currentUser" class="user-info-display">
+        <div class="user-detail">
+          <strong>ผู้ใช้:</strong> {{ currentUser.username }}
+          <span *ngIf="currentUser.full_name"> ({{ currentUser.full_name }})</span>
+        </div>
+        <p class="info-note">
+          <i class="fas fa-info-circle"></i>
+          ข้อมูลด้านล่างถูกเติมจากโปรไฟล์ของคุณ สามารถแก้ไขได้ตามต้องการ
+        </p>
+      </div>
+      <div *ngIf="!isLoggedIn" class="guest-notice">
+        <p class="notice-text">
+          <i class="fas fa-lightbulb"></i>
+          หากคุณมีบัญชีผู้ใช้ แนะนำให้เข้าสู่ระบบเพื่อความสะดวกในการสั่งซื้อ
+        </p>
+  <button class="btn btn-outline-primary" (click)="goToLogin()">
+          <i class="fas fa-sign-in-alt"></i>
+          เข้าสู่ระบบ
+        </button>
+      </div>
+      <div class="form-group">
+        <label for="customerName">ชื่อ-นามสกุล *</label>
+        <input 
+          type="text" 
+          id="customerName" 
+          [(ngModel)]="customerName" 
+          class="form-control"
+          placeholder="กรุณากรอกชื่อ-นามสกุล"
+          readonly
+          style="background-color: #f5f5f5; cursor: not-allowed;"
+          required>
+      </div>
+      <div class="form-group">
+        <label for="customerPhone">เบอร์โทรศัพท์ *</label>
+        <input 
+          type="tel" 
+          id="customerPhone" 
+          [(ngModel)]="customerPhone" 
+          class="form-control"
+          pattern="[0-9]*"
+          maxlength="10"
+          placeholder="กรุณากรอกเบอร์โทรศัพท์"
+          readonly
+          style="background-color: #f5f5f5; cursor: not-allowed;"
+          required>
+      </div>
+      <div class="form-group">
+        <label for="customerAddress">ที่อยู่จัดส่ง *</label>
+        <textarea 
+          id="customerAddress" 
+          [(ngModel)]="customerAddress" 
+          class="form-control"
+          rows="3"
+          placeholder="กรุณากรอกที่อยู่สำหรับจัดส่งสินค้า"
+          readonly
+          style="background-color: #f5f5f5; cursor: not-allowed;"
+          required></textarea>
+      </div>
+      
+      <!-- ข้อความแจ้งเตือน -->
+      <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 12px 15px; margin-top: 15px; border-radius: 4px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-info-circle" style="color: #2196f3;"></i>
+          <small style="color: #1565c0; line-height: 1.5;">
+            ข้อมูลนี้ถูกดึงมาจากโปรไฟล์ของคุณ หากต้องการแก้ไขกรุณาไปที่
+            <a routerLink="/profile" style="color: #1976d2; font-weight: 600; text-decoration: underline;">หน้าโปรไฟล์</a>
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="order-summary-card">
+      <h3 class="section-title">
+        <i class="fas fa-shopping-bag"></i>
+        สรุปการสั่งซื้อ
+      </h3>
+      <div class="order-items">
+        <div *ngFor="let item of cartItems" class="order-item">
+          <img [src]="item.image" [alt]="item.product_name" class="item-image">
+          <div class="item-details">
+            <div class="item-name">{{ item.product_name }}</div>
+            <div class="item-quantity">จำนวน: {{ item.quantity }} ชิ้น</div>
+            <div class="item-price">{{ item.price * item.quantity | currency:'THB':'symbol':'1.0-0' }} บาท</div>
+          </div>
+        </div>
+      </div>
+      <div class="order-total">
+        <div class="total-row">
+          <span>จำนวนสินค้า:</span>
+          <span>{{ getTotalQuantity() }} ชิ้น</span>
+        </div>
+        <div class="total-row">
+          <span>ค่าจัดส่ง:</span>
+          <span class="free">ฟรี</span>
+        </div>
+        <div class="total-row final-total">
+          <span>ยอดรวมทั้งสิ้น:</span>
+          <span>{{ getTotalPrice() | currency:'THB':'symbol':'1.0-0' }} บาท</span>
+        </div>
+      </div>
+    </div>
+    <div class="payment-method-card">
+      <h3 class="section-title">
+        <i class="fas fa-credit-card"></i>
+        เลือกวิธีชำระเงิน
+      </h3>
+      <div class="payment-options">
+        <div class="payment-option" 
+             [class.selected]="selectedPaymentMethod === 'cod'"
+             (click)="onPaymentMethodChange('cod')">
+          <div class="option-header">
+            <input type="radio" 
+                   name="paymentMethod" 
+                   value="cod" 
+                   [(ngModel)]="selectedPaymentMethod">
+            <i class="fas fa-truck payment-icon"></i>
+            <span class="option-title">เก็บเงินปลายทาง (COD)</span>
+          </div>
+          <p class="option-description">ชำระเงินเมื่อได้รับสินค้า</p>
+        </div>
+        <div class="payment-option" 
+             [class.selected]="selectedPaymentMethod === 'qr'"
+             (click)="onPaymentMethodChange('qr')">
+          <div class="option-header">
+            <input type="radio" 
+                   name="paymentMethod" 
+                   value="qr" 
+                   [(ngModel)]="selectedPaymentMethod">
+            <i class="fas fa-qrcode payment-icon"></i>
+            <span class="option-title">สแกน QR Code</span>
+          </div>
+          <p class="option-description">ชำระผ่าน QR Code PromptPay</p>
+          <div *ngIf="selectedPaymentMethod === 'qr'" class="qr-code-section">
+            <div class="qr-code-container">
+              <div class="qr-header">
+                <h4>
+                  <i class="fas fa-mobile-alt"></i>
+                  สแกน QR Code ด้วยแอพธนาคาร
+                </h4>
+                <p class="qr-subtitle">QR Code PromptPay</p>
+              </div>
+              <img [src]="qrCodeImage" alt="QR Code Payment" class="qr-code">
+              <div class="qr-details">
+                <div class="amount-display">
+                  <span class="amount-label">ยอดชำระ:</span>
+                  <span class="amount-value">{{ getTotalPrice() | currency:'THB':'symbol':'1.0-0' }} บาท</span>
+                </div>
+                <div class="shop-info">
+                  <i class="fas fa-store"></i>
+                  <span>{{ shopName }}</span>
+                </div>
+              </div>
+              <div class="qr-instructions">
+                <h5><i class="fas fa-info-circle"></i> วิธีการชำระเงิน:</h5>
+                <ol>
+                  <li>เปิดแอพธนาคารของคุณ (ธนาคารใดก็ได้)</li>
+                  <li>เลือกเมนู "สแกน QR" หรือ "QR Payment"</li>
+                  <li>สแกน QR Code ด้านบน</li>
+                  <li>ตรวจสอบยอดเงิน {{ getTotalPrice() | currency:'THB':'symbol':'1.0-0' }} บาท</li>
+                  <li>ยืนยันการโอนเงิน</li>
+                  <li>แนบหลักฐานการโอนด้านล่าง</li>
+                </ol>
+              </div>
+            </div>
+            <div class="payment-proof-section">
+              <label for="paymentProof" class="proof-label">
+                <i class="fas fa-camera"></i>
+                แนบหลักฐานการชำระเงิน *
+              </label>
+              <p class="proof-description">
+                กรุณาแคปหน้าจอหรือถ่ายภาพหลักฐานการโอนเงินจากแอพธนาคาร
+              </p>
+              <input 
+                type="file" 
+                id="paymentProof" 
+                accept="image/*" 
+                (change)="onFileSelected($event)"
+                class="file-input">
+              <div *ngIf="paymentProofFile" class="file-selected">
+                <i class="fas fa-check-circle"></i>
+                ไฟล์ที่เลือก: {{ paymentProofFile.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="checkout-actions">
+  <button class="btn btn-secondary" (click)="goBack()" [disabled]="isSubmitting">
+        <i class="fas fa-arrow-left"></i>
+        กลับไปตระกร้า
+      </button>
+      <button 
+  class="btn btn-primary btn-submit" 
+        (click)="submitOrder()" 
+        [disabled]="!selectedPaymentMethod || isSubmitting">
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+        <i class="fas fa-check" *ngIf="!isSubmitting"></i>
+        {{ isSubmitting ? 'กำลังดำเนินการ...' : 'ยืนยันการสั่งซื้อ' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,385 @@
+<style>
+.hero-banner {
+  background: url('assets/images/frozen-food.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  padding: 100px 0;
+  position: relative;
+  min-height: 450px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  filter: blur(3px);
+  z-index: 0;
+}
+.hero-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+.banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  letter-spacing: -0.02em;
+  color: #ffffff !important; /* ensure the main hero title is white */
+}
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 40px;
+  opacity: 0.95;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.95); /* keep subtitle readable on banner */
+}
+.btn-primary {
+  background: var(--primary-blue);
+  color: #ffffff;
+  padding: 14px 28px;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 6px 18px rgba(26,115,232,0.18);
+  transition: transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background: var(--primary-blue-dark);
+  box-shadow: 0 8px 22px rgba(23,105,224,0.18);
+}
+.categories-section {
+  padding: 80px 0;
+  background: #fafbfc;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.section-title {
+  font-size: 2.75rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 60px;
+  color: #202124;
+  letter-spacing: -0.02em;
+}
+.loading-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: #5f6368;
+}
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #1a73e8;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-top: 20px;
+}
+.category-card {
+  background: white;
+  padding: 48px 32px;
+  position: relative;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  border: 1px solid #f0f0f0;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.category-icon {
+  font-size: 3.5rem;
+  margin-bottom: 24px;
+  display: block;
+  color: #000;
+}
+.category-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #202124;
+}
+.category-description {
+  color: #5f6368;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+.category-arrow {
+  position: absolute;
+  bottom: 24px;
+  right: 32px;
+  font-size: 1.5rem;
+  color: #1a73e8;
+  font-weight: bold;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.featured-products-section {
+  padding: 80px 0;
+  background: white;
+}
+.featured-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  margin-bottom: 60px;
+}
+.featured-product-card {
+  background: white;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.product-image-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.product-image {
+  /* increase featured product image size for better visibility */
+  display: block;
+  width: auto;
+  max-width: 85%;
+  height: 160px;
+  object-fit: contain; /* show the full product without cropping */
+  margin: 0 auto;
+}
+
+.product-stock {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #34a853;
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.product-stock.out-of-stock {
+  background: #ea4335;
+}
+.product-content {
+  padding: 24px;
+}
+.product-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #202124;
+}
+.product-description {
+  color: #5f6368;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+.product-price-section {
+  margin-bottom: 20px;
+}
+.original-price {
+  color: #9aa0a6;
+  text-decoration: line-through;
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+.current-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000;
+}
+.add-to-cart-btn {
+  width: 100%;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.add-to-cart-btn:disabled {
+  background: #dadce0;
+  color: #5f6368;
+  cursor: not-allowed;
+}
+.view-all-section {
+  text-align: center;
+}
+.view-all-btn {
+  background: #1a73e8;
+  color: white;
+  padding: 16px 48px;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.footer-section {
+  background: #1f1f1f;
+  color: white;
+  padding: 60px 0 40px 0;
+  margin-top: 80px;
+}
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 48px;
+  align-items: start; /* ensure columns align to top */
+}
+.footer-column h4 {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 20px 0; /* remove top margin so headings line up */
+  padding-top: 4px; /* small padding to visually balance with content */
+}
+.footer-column p {
+  color: #b3b3b3;
+  margin: 10px 0;
+  line-height: 1.6;
+}
+.footer-contact h4 {
+  margin: 0; /* remove top margin so heading aligns with other columns */
+}
+
+</style>
+<section class="hero-banner">
+  <div class="banner-content">
+    <div class="hero-text">
+      <h1 class="hero-title">อาหารแช่แข็ง</h1>
+      <p class="hero-subtitle">สด ใหม่ คุณภาพ จากธรรมชาติ</p>
+      <div class="hero-actions">
+  <button class="btn btn-primary" routerLink="/product">เลือกซื้อสินค้า</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="categories-section">
+  <div class="container">
+    <h2 class="section-title">หมวดหมู่สินค้า</h2>
+    <div *ngIf="loading" class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>กำลังโหลดข้อมูล...</p>
+    </div>
+    <div class="categories-grid" *ngIf="!loading">
+      <div class="category-card" *ngFor="let category of categories" 
+           (click)="navigateToProducts(category.id)">
+        <div class="category-icon">{{ category.icon }}</div>
+        <h3 class="category-name">{{ category.name }}</h3>
+        <p class="category-description">{{ getCategoryDescription(category.name) }}</p>
+        <div class="category-arrow">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="featured-products-section">
+  <div class="container">
+    <h2 class="section-title">สินค้าแนะนำ</h2>
+    <div class="featured-products-grid">
+      <div *ngFor="let product of featuredProducts" class="featured-product-card">
+        <div class="product-image-wrapper">
+    <img [src]="product.image" [alt]="product.product_name" class="product-image"
+               (error)="onImageError($event)">
+          <div class="product-stock" [class.out-of-stock]="!product.inStock">
+            {{ product.inStock ? 'พร้อมส่ง' : 'หมด' }}
+          </div>
+        </div>
+        <div class="product-content">
+          <h3 class="product-name">{{ product.product_name }}</h3>
+          <p class="product-description">ปริมาณ: {{ product.quantity }} ชิ้น</p>
+          <div class="product-price-section">
+            <span class="current-price">{{ product.price | currency:'THB':'symbol':'1.0-0' }}</span>
+          </div>
+  <button class="btn btn-primary add-to-cart-btn" (click)="addToCart(product)"
+                  [disabled]="!product.inStock">
+            {{ product.inStock ? 'เพิ่มลงตะกร้า' : 'สินค้าหมด' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="view-all-section">
+  <button class="btn btn-primary view-all-btn" routerLink="/product">
+        ดูสินค้าทั้งหมด
+      </button>
+    </div>
+  </div>
+</section>
+<footer class="footer-section">
+  <div class="footer-container">
+    <div class="footer-column">
+      <div class="">
+      </div>
+      <div class="footer-contact">
+        <h4>ติดต่อเรา</h4>
+        <p>โทรศัพท์ 1: 098-550-8808</p>
+        <p>Email: FROZEN@gmail.com</p>
+        <p>ID LINE: FROZEN</p>
+        <p>Facebook: FROZEN</p>
+      </div>
+    </div>
+    <div class="footer-column">
+      <h4>ร้านค้า</h4>
+      <p>เมนู</p>
+      <p *ngIf="currentUser?.role === 'admin'; else normalRestock">
+        <a routerLink="/admin" style="color: #4285f4; text-decoration: none; font-weight: 600;">
+          Restock(สำหรับแอดมิน)
+        </a>
+      </p>
+      <ng-template #normalRestock>
+        <p style="color: #888;">Restock(สำหรับแอดมิน)</p>
+      </ng-template>
+    </div>
+    <div class="footer-column">
+      <h4>การจัดส่ง</h4>
+      <p>การจัดส่ง: ทุกวันจันทร์-อาทิตย์</p>
+      <p>เวลาจัดส่ง: 06:00-18:00</p>
+      <p>สามชุก</p>
+      <p>สามชุก</p>
+      <p>สุพรรณบุรี</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,766 @@
+<style>
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text);
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.background-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.shape {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  animation: float 6s ease-in-out infinite;
+}
+.shape-1 {
+  width: 200px;
+  height: 200px;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+.shape-2 {
+  width: 150px;
+  height: 150px;
+  top: 60%;
+  right: 10%;
+  animation-delay: 2s;
+}
+.shape-3 {
+  width: 100px;
+  height: 100px;
+  bottom: 20%;
+  left: 20%;
+  animation-delay: 4s;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+.login-card {
+  background: var(--surface);
+  color: #181818;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 2;
+  animation: slideIn 0.5s ease-out;
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.logo i {
+  font-size: 2.5em;
+  color: #667eea;
+  animation: spin 4s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.logo h1 {
+  font-size: 2.2em;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+.subtitle {
+  color: #666;
+  font-size: 1.1em;
+  margin: 0;
+}
+.tab-switcher {
+  display: flex;
+  background: #f8f9ff;
+  padding: 4px;
+  margin-bottom: 25px;
+  overflow: hidden;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1em;
+}
+.tab-btn.active {
+  background: white;
+  color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  font-weight: 600;
+}
+.message {
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.error-message {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+.success-message {
+  background: #e3f2fd;
+  color: #2196F3;
+  border: 1px solid #bbdefb;
+}
+.login-form {
+  margin-bottom: 25px;
+}
+.input-group {
+  margin-bottom: 20px;
+}
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+  font-size: 0.95em;
+}
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-icon {
+  position: absolute;
+  left: 15px;
+  color: #999;
+  z-index: 1;
+}
+.form-input {
+  width: 100%;
+  padding: 14px 45px 14px 45px;
+  border: 2px solid #e0e6ff;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  background: #fafbff;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+.form-input::placeholder {
+  color: #aaa;
+}
+.form-input[rows] {
+  padding: 12px 45px 12px 45px;
+  line-height: 1.4;
+  resize: vertical;
+  min-height: 50px;
+  font-family: inherit;
+}
+.password-toggle {
+  position: absolute;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: #667eea;
+}
+
+.saved-account-item:hover {
+  background: #f5f7ff !important;
+}
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #666;
+}
+.checkbox-label input {
+  display: none;
+}
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ddd;
+  margin-right: 8px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.checkbox-label input:checked + .checkmark {
+  background: #667eea;
+  border-color: #667eea;
+}
+.checkbox-label input:checked + .checkmark::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+.forgot-link {
+  background: none;
+  border: none;
+  color: #667eea;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: color 0.3s ease;
+}
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+.social-login {
+  margin-top: 25px;
+}
+.divider {
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #eee;
+}
+.divider span {
+  background: white;
+  padding: 0 15px;
+  color: #999;
+  font-size: 0.9em;
+  position: relative;
+  z-index: 1;
+}
+.social-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.social-btn {
+  padding: 12px 16px;
+  border: 2px solid #eee;
+  background: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.9em;
+}
+.google-btn {
+  color: #db4437;
+  border-color: #db4437;
+}
+.facebook-btn {
+  color: #3b5998;
+  border-color: #3b5998;
+}
+
+
+</style>
+<div class="login-container">
+  <div class="background-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+  <div class="login-card">
+    <div class="login-header">
+      <div class="logo">
+      </div>
+      <p class="subtitle" style="font-size:2em; font-weight:bold; color:#181818;">
+        <span *ngIf="isLoginMode">เข้าสู่ระบบ</span>
+        <span *ngIf="!isLoginMode && registerStep === 1">สมัครสมาชิก - ข้อมูลส่วนตัว</span>
+        <span *ngIf="!isLoginMode && registerStep === 2">สมัครสมาชิก - ที่อยู่</span>
+      </p>
+    </div>
+    <div class="tab-switcher">
+      <button 
+        class="tab-btn" 
+        [class.active]="isLoginMode"
+        (click)="isLoginMode = true; registerStep = 1; clearMessages()">
+        เข้าสู่ระบบ
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="!isLoginMode"
+        (click)="isLoginMode = false; registerStep = 1; clearMessages()">
+        สมัครสมาชิก
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="message error-message">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="message success-message">
+      <i class="fas fa-check-circle"></i>
+      {{ successMessage }}
+    </div>
+    <form *ngIf="isLoginMode" class="login-form" (ngSubmit)="onLogin()">
+      <div class="input-group">
+        <label for="loginEmail">อีเมล</label>
+        <div class="input-wrapper" style="position: relative;">
+          <i class="fas fa-envelope input-icon"></i>
+          <input 
+            id="loginEmail"
+            type="text" 
+            [(ngModel)]="loginData.email" 
+            name="loginEmail"
+            placeholder="กรอกอีเมล"
+            class="form-input"
+            (input)="onEmailChange()"
+            (focus)="showSavedAccounts = savedAccounts.length > 0"
+            required>
+          
+          <!-- รายการบัญชีที่จำไว้ -->
+          <div *ngIf="showSavedAccounts && savedAccounts.length > 0" 
+               style="position: absolute; top: 100%; left: 0; right: 0; 
+                      background: white; border: 2px solid #e1e5e9; 
+                      border-top: none; z-index: 1000; max-height: 200px; 
+                      overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                      border-radius: 0 0 4px 4px;">
+            <div *ngFor="let account of savedAccounts" 
+                 class="saved-account-item"
+                 (click)="selectSavedAccount(account)"
+                 style="padding: 12px 15px; cursor: pointer; 
+                        border-bottom: 1px solid #f0f0f0; display: flex; 
+                        justify-content: space-between; align-items: center;
+                        font-family: 'Prompt', sans-serif; transition: background 0.2s;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-user-circle" style="color: #667eea; font-size: 1.2em;"></i>
+                <span style="color: #333;">{{ account.email }}</span>
+              </div>
+              <button type="button" 
+                      (click)="removeSavedAccount(account.email); $event.stopPropagation();"
+                      style="background: none; border: none; color: #999; 
+                             cursor: pointer; padding: 5px; font-size: 0.9em;
+                             transition: color 0.2s;"
+                      onmouseover="this.style.color='#ff4444'"
+                      onmouseout="this.style.color='#999'"
+                      title="ลบบัญชีนี้">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="loginPassword">รหัสผ่าน</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <input 
+            id="loginPassword"
+            [type]="showPassword ? 'text' : 'password'" 
+            [(ngModel)]="loginData.password" 
+            name="loginPassword"
+            placeholder="กรอกรหัสผ่าน"
+            class="form-input"
+            required>
+          <button 
+            type="button" 
+            class="password-toggle"
+            (click)="togglePasswordVisibility()">
+            <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+      <div class="form-options">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe">
+          <span class="checkmark"></span>
+          จดจำการเข้าสู่ระบบ
+        </label>
+        <button type="button" class="forgot-link" (click)="forgotPassword()">
+          ลืมรหัสผ่าน?
+        </button>
+      </div>
+      <button 
+        type="submit" 
+        class="submit-btn"
+        [disabled]="isLoading">
+        <span *ngIf="!isLoading">เข้าสู่ระบบ</span>
+        <span *ngIf="isLoading">
+          <i class="fas fa-spinner fa-spin"></i>
+          กำลังเข้าสู่ระบบ...
+        </span>
+      </button>
+    </form>
+    <form *ngIf="!isLoginMode" class="login-form">
+      <!-- Progress Indicator -->
+      <div style="display: flex; gap: 10px; margin-bottom: 25px; justify-content: center; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div [style.background]="registerStep === 1 ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#e0e0e0'"
+               style="width: 30px; height: 30px; border-radius: 50%; display: flex; 
+                      align-items: center; justify-content: center; color: white; 
+                      font-weight: bold; transition: all 0.3s;">
+            1
+          </div>
+          <span [style.color]="registerStep === 1 ? '#667eea' : '#999'" 
+                style="font-size: 0.9em; font-weight: 500;">ข้อมูลส่วนตัว</span>
+        </div>
+        <div style="width: 40px; height: 2px; background: #e0e0e0;"></div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div [style.background]="registerStep === 2 ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#e0e0e0'"
+               style="width: 30px; height: 30px; border-radius: 50%; display: flex; 
+                      align-items: center; justify-content: center; color: white; 
+                      font-weight: bold; transition: all 0.3s;">
+            2
+          </div>
+          <span [style.color]="registerStep === 2 ? '#667eea' : '#999'" 
+                style="font-size: 0.9em; font-weight: 500;">ที่อยู่</span>
+        </div>
+      </div>
+      
+      <!-- Step 1: ข้อมูลส่วนตัว -->
+      <div *ngIf="registerStep === 1">
+        <div class="input-group">
+          <label for="registerName">ชื่อ-นามสกุล</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user input-icon"></i>
+            <input 
+              id="registerName"
+              type="text" 
+              [(ngModel)]="registerData.name" 
+            name="registerName"
+            placeholder="กรอกชื่อ-นามสกุล"
+            class="form-input"
+            required>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="registerEmail">อีเมล</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope input-icon"></i>
+          <input 
+            id="registerEmail"
+            type="text" 
+            [(ngModel)]="registerData.email" 
+            name="registerEmail"
+            placeholder="กรอกอีเมล"
+            class="form-input"
+            required>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="registerPassword">รหัสผ่าน</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <input 
+            id="registerPassword"
+            [type]="showPassword ? 'text' : 'password'" 
+            [(ngModel)]="registerData.password" 
+            name="registerPassword"
+            placeholder="กรอกรหัสผ่าน (อย่างน้อย 6 ตัวอักษร)"
+            class="form-input"
+            required>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="confirmPassword">ยืนยันรหัสผ่าน</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <input 
+            id="confirmPassword"
+            [type]="showPassword ? 'text' : 'password'" 
+            [(ngModel)]="registerData.confirmPassword" 
+            name="confirmPassword"
+            placeholder="ยืนยันรหัสผ่านอีกครั้ง"
+            class="form-input"
+            required>
+          <button 
+            type="button" 
+            class="password-toggle"
+            (click)="togglePasswordVisibility()">
+            <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="registerPhone">เบอร์โทรศัพท์</label>
+        <div class="input-wrapper">
+          <i class="fas fa-phone input-icon"></i>
+          <input 
+            id="registerPhone"
+            type="tel" 
+            [(ngModel)]="registerData.phone" 
+            name="registerPhone"
+            placeholder="กรอกเบอร์โทรศัพท์ (ตัวเลขเท่านั้น)"
+            class="form-input"
+            pattern="[0-9]*"
+            maxlength="10"
+            (keypress)="onlyNumbers($event)"
+            required>
+        </div>
+      </div>
+        
+        <button 
+          type="button"
+          class="btn btn-primary" 
+          (click)="goToAddressStep()"
+          style="width: 100%; padding: 14px; font-size: 1.1em; 
+                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                 color: white; border: none; cursor: pointer; 
+                 transition: transform 0.2s, box-shadow 0.2s;
+                 box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);"
+          onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102, 126, 234, 0.5)'"
+          onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.4)'">
+          <i class="fas fa-arrow-right" style="margin-right: 8px;"></i>
+          ถัดไป
+        </button>
+      </div>
+      
+      <!-- Step 2: ที่อยู่ -->
+      <div *ngIf="registerStep === 2">
+        <div class="input-group">
+          <label for="houseNumber">บ้านเลขที่</label>
+        <div class="input-wrapper">
+          <i class="fas fa-home input-icon"></i>
+          <input 
+            id="houseNumber"
+            type="text" 
+            [(ngModel)]="registerData.houseNumber" 
+            name="houseNumber"
+            placeholder="เลขที่บ้าน"
+            class="form-input"
+            required>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="moo">หมู่</label>
+        <div class="input-wrapper">
+          <i class="fas fa-map-signs input-icon"></i>
+          <input 
+            id="moo"
+            type="text" 
+            [(ngModel)]="registerData.moo" 
+            name="moo"
+            placeholder="หมู่ที่ (ถ้ามี)"
+            class="form-input">
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="soi">ซอย</label>
+        <div class="input-wrapper">
+          <i class="fas fa-road input-icon"></i>
+          <input 
+            id="soi"
+            type="text" 
+            [(ngModel)]="registerData.soi" 
+            name="soi"
+            placeholder="ซอย (ถ้ามี)"
+            class="form-input">
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="road">ถนน</label>
+        <div class="input-wrapper">
+          <i class="fas fa-road input-icon"></i>
+          <input 
+            id="road"
+            type="text" 
+            [(ngModel)]="registerData.road" 
+            name="road"
+            placeholder="ถนน (ถ้ามี)"
+            class="form-input">
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="province">จังหวัด <span style="color: red;">*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-map-marker-alt input-icon"></i>
+          <select 
+            id="province"
+            [(ngModel)]="registerData.province" 
+            name="province"
+            (change)="onProvinceChange()"
+            class="form-input"
+            required>
+            <option value="">เลือกจังหวัด</option>
+            <option *ngFor="let province of provinces" [value]="province.id">
+              {{ province.name_th }}
+            </option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="district">อำเภอ/เขต <span style="color: red;">*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-map-marker-alt input-icon"></i>
+          <select 
+            id="district"
+            [(ngModel)]="registerData.district" 
+            name="district"
+            (change)="onDistrictChange()"
+            class="form-input"
+            [disabled]="!registerData.province"
+            required>
+            <option value="">เลือกอำเภอ/เขต</option>
+            <option *ngFor="let district of districts" [value]="district.id">
+              {{ district.name_th }}
+            </option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="subDistrict">ตำบล/แขวง <span style="color: red;">*</span></label>
+        <div class="input-wrapper">
+          <i class="fas fa-map-marker-alt input-icon"></i>
+          <select 
+            id="subDistrict"
+            [(ngModel)]="registerData.subDistrict" 
+            name="subDistrict"
+            (change)="onSubDistrictChange()"
+            class="form-input"
+            [disabled]="!registerData.district"
+            required>
+            <option value="">เลือกตำบล/แขวง</option>
+            <option *ngFor="let subDistrict of subDistricts" [value]="subDistrict.id">
+              {{ subDistrict.name_th }}
+            </option>
+          </select>
+        </div>
+      </div>
+      
+        <div class="input-group">
+          <label for="zipCode">รหัสไปรษณีย์</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope input-icon"></i>
+            <input 
+              id="zipCode"
+              type="text" 
+              [(ngModel)]="registerData.zipCode" 
+              name="zipCode"
+              placeholder="รหัสไปรษณีย์"
+              class="form-input"
+              readonly
+              required>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button 
+            type="button"
+            class="btn btn-secondary" 
+            (click)="backToPersonalInfoStep()"
+            style="flex: 1; padding: 14px; font-size: 1.1em; 
+                   background: #6c757d; color: white; border: none; 
+                   cursor: pointer; transition: background 0.2s;"
+            onmouseover="this.style.background='#5a6268'"
+            onmouseout="this.style.background='#6c757d'">
+            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>
+            ย้อนกลับ
+          </button>
+          
+          <button 
+            type="button"
+            (click)="onRegister()"
+            class="btn btn-primary" 
+            [disabled]="isLoading"
+            style="flex: 2; padding: 14px; font-size: 1.1em; 
+                   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                   color: white; border: none; cursor: pointer; 
+                   transition: transform 0.2s, box-shadow 0.2s;
+                   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102, 126, 234, 0.5)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.4)'">
+            <span *ngIf="!isLoading">
+              <i class="fas fa-check" style="margin-right: 8px;"></i>
+              สมัครสมาชิก
+            </span>
+            <span *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin"></i>
+              กำลังสมัครสมาชิก...
+            </span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

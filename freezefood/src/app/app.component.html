@@ -1,0 +1,345 @@
+<style>
+.main-header {
+  background: var(--white);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-gray);
+}
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  height: 75px;
+}
+.header-left {
+  flex: 0 0 auto;
+}
+.header-left .logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--dark-gray);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  font-size: 1.8rem;
+  margin-right: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-blue);
+}
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  transition: all 0.3s ease;
+  color: #000;
+}
+.header-nav {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: var(--spacing-xl);
+}
+  .nav-item {
+  text-decoration: none;
+  color: var(--dark-gray);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  letter-spacing: -0.02em;
+}
+.nav-item.active {
+  color: var(--primary-blue);
+  background: rgba(33, 150, 243, 0.12);
+  font-weight: 700;
+}
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--primary-blue);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+.admin-menu {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white !important;
+  margin-left: 1rem;
+}
+.admin-menu::after {
+  display: none;
+}
+.header-right {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.language-selector i {
+  font-size: 1rem;
+}
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 12px 20px;
+  color: var(--dark-gray);
+  text-decoration: none;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: -0.01em;
+}
+.login-btn i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+.user-section {
+  position: relative;
+}
+.user-dropdown {
+  position: relative;
+}
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 12px 16px;
+  border: none;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  background: white;
+}
+.user-btn i.fa-user-circle {
+  font-size: 1.3rem;
+  color: var(--primary-blue);
+  width: 20px;
+  text-align: center;
+}
+.user-btn i.fa-chevron-down {
+  font-size: 0.8rem;
+  width: 12px;
+  text-align: center;
+}
+.user-btn.active {
+  border-color: var(--primary-blue);
+}
+.user-btn.active i.fa-chevron-down {
+  transform: rotate(180deg);
+}
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--white);
+  border: none;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  min-width: 280px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-15px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+.dropdown-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-gray);
+  background: var(--light-gray);
+}
+.user-info strong {
+  display: block;
+  color: var(--dark-gray);
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.user-info small {
+  color: var(--text-gray);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.dropdown-divider {
+  height: 1px;
+  background: var(--border-gray);
+  margin: var(--spacing-xs) 0;
+}
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 14px 20px;
+  color: var(--dark-gray);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 400;
+  margin: 2px 8px;
+  width: calc(100% - 16px);
+  letter-spacing: -0.01em;
+}
+.dropdown-item i {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--text-gray);
+  transition: all 0.3s ease;
+}
+.logout-item {
+  color: var(--danger-red);
+  border-top: 1px solid var(--border-gray);
+  margin-top: var(--spacing-xs);
+  padding-top: 18px;
+}
+.logout-item i {
+  color: var(--danger-red);
+}
+.cart-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: var(--white);
+  text-decoration: none;
+  position: relative;
+  font-size: 1.1rem;
+}
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--danger-red);
+  color: var(--white);
+  width: 22px;
+  height: 22px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--white);
+}
+.main-content {
+  min-height: calc(100vh - 80px);
+}
+
+</style>
+<header class="main-header">
+  <div class="header-container">
+    <div class="header-left">
+      <a routerLink="/" class="logo-link">
+        <span class="logo-icon">❄️</span>
+        <span class="logo-text">FreezeFood</span>
+      </a>
+    </div>
+    <nav class="header-nav">
+      <a routerLink="/product" class="nav-item" style="color: black; font-size: 0.875rem;">เมนู</a>
+    </nav>
+    <div class="header-right">
+      <div class="user-section" *ngIf="currentUser; else loginButton">
+        <div class="user-dropdown">
+          <button class="user-btn" (click)="toggleUserDropdown()">
+            <i class="fas fa-user-circle"></i>
+            <span>{{ currentUser.username }}</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-menu" [class.show]="showUserDropdown">
+            <div class="dropdown-header">
+              <div class="user-info">
+                <strong>{{ currentUser.username }}</strong>
+                <small>{{ currentUser.email }}</small>
+              </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a routerLink="/profile" class="dropdown-item" (click)="toggleUserDropdown()">
+              <i class="fas fa-user"></i>
+              <span>โปรไฟล์</span>
+            </a>
+            <a routerLink="/status" class="dropdown-item" (click)="toggleUserDropdown()">
+              <i class="fas fa-clipboard-list"></i>
+              <span>สถานะ</span>
+            </a>
+            <a routerLink="/history" class="dropdown-item" (click)="toggleUserDropdown()">
+              <i class="fas fa-history"></i>
+              <span>ประวัติการสั่งซื้อ</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout-item" (click)="logout()">
+              <i class="fas fa-sign-out-alt" style="color: #DC3545;"></i>
+              <span style="color: #DC3545;">ออกจากระบบ</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <ng-template #loginButton>
+        <a routerLink="/login" class="login-btn">
+          <i class="fas fa-user"></i>
+          <span>เข้าสู่ระบบ</span>
+        </a>
+      </ng-template>
+      <a routerLink="/cart" class="cart-btn">
+        <i class="fas fa-shopping-cart" style="color: black;"></i>
+        <span class="cart-count" *ngIf="(cartItemCount$ | async) as count">{{ count > 99 ? '99+' : count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

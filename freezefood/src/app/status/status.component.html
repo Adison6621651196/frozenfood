@@ -1,0 +1,677 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+body, .status-container {
+  background: #fff;
+  color: #333;
+}
+h1, h2, h3, h4, h5, h6 {
+  color: #333;
+}
+.status-container { background: var(--bg); color: var(--text); padding:18px; }
+.status-card { background: var(--surface); color: var(--text); padding:12px; box-shadow: 0 6px 12px rgba(0,0,0,0.04); }
+.button, button, input[type="submit"] {
+  background: #2196F3;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn { background: var(--text); color:#fff; }
+.status-page {
+  font-family: 'Prompt', sans-serif;
+  min-height: 100vh;
+  background: #ffffff; /* set status page background to white */
+  padding: 20px;
+  color: #333; /* ensure readable text on white background */
+}
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 30px;
+}
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  background: black;
+  background-clip: text;
+}
+.page-header p {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+}
+.search-section {
+  margin-bottom: 30px;
+}
+.search-container {
+  background: white;
+  padding: 25px;
+}
+.search-container h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: #333;
+}
+.search-box {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  position: relative;
+}
+.search-box i {
+  position: absolute;
+  left: 15px;
+  color: #999;
+  font-size: 1.1rem;
+  z-index: 1;
+}
+.search-input {
+  flex: 1;
+  padding: 15px 15px 15px 45px;
+  border: 2px solid #e1e5e9;
+  font-size: 1rem;
+  font-family: 'Prompt', sans-serif;
+  transition: all 0.3s ease;
+}
+.search-input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+.search-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 25px;
+  background: black;
+  color: white;
+  border: none;
+  font-family: 'Prompt', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.search-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.clear-btn {
+  padding: 15px;
+  background: #f8f9fa;
+  border: 2px solid #e1e5e9;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.results-section {
+  margin-top: 30px;
+}
+.order-details {
+  background: white;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+.order-summary {
+  padding: 30px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+  border-bottom: 1px solid #e1e5e9;
+}
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.order-info h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+  color: #333;
+}
+.customer-name {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+}
+.status-badge {
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+}
+.status-preparing { background: #fff3cd; color: #856404; }
+.status-packaging { background: #d1ecf1; color: #0c5460; }
+.status-shipping { background: #cce5ff; color: #004085; }
+.status-delivered { background: #e3f2fd; color: #1976d2; }
+.status-cancelled { background: #f8d7da; color: #721c24; }
+.progress-section {
+  margin-top: 25px;
+}
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e1e5e9;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+  transition: width 0.8s ease;
+}
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+.step.active {
+  opacity: 1;
+}
+.step-icon {
+  width: 40px;
+  height: 40px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.step span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  padding: 30px;
+}
+.info-card {
+  background: #f8f9ff;
+  padding: 25px;
+  border: 1px solid #e1e5e9;
+}
+.info-card h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e9ecef;
+}
+.info-item:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+.label {
+  font-weight: 500;
+  color: #666;
+  flex-shrink: 0;
+}
+.value {
+  text-align: right;
+  color: #000;
+  font-weight: 500;
+}
+.tracking-number {  
+  color: #000;
+  padding: 4px 8px;
+  font-family: monospace;
+}
+.delivered-time {
+  color: #2196F3;
+  font-weight: 600;
+}
+.order-items {
+  margin-bottom: 20px;
+}
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+.item:last-child {
+  border-bottom: none;
+}
+.item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.item-name {
+  font-weight: 500;
+  color: #333;
+}
+.item-qty {
+  font-size: 0.9rem;
+  color: #666;
+}
+.item-price {
+  font-weight: 600;
+  color: #2196F3;
+}
+.total-section {
+  border-top: 2px solid #e1e5e9;
+  padding-top: 15px;
+  margin-top: 15px;
+}
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.total-label {
+  font-weight: 600;
+  color: #333;
+}
+.total-amount {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2196F3;
+}
+.payment-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px 12px;
+  width: fit-content;
+}
+.payment-paid { background: #d4edda; color: #155724; }
+.payment-pending { background: #fff3cd; color: #856404; }
+.payment-refunded { background: #f8d7da; color: #721c24; }
+.history-card {
+  padding: 30px;
+  border-top: 1px solid #e1e5e9;
+}
+.history-card h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 25px 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.timeline {
+  position: relative;
+  padding-left: 30px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 25px;
+  padding-left: 25px;
+}
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+.timeline-dot {
+  position: absolute;
+  left: -8px;
+  top: 8px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: 3px solid #2196F3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.timeline-item.current .timeline-dot {
+  background: #2196F3;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+  animation: pulse 2s infinite;
+}
+.timeline-content {
+  background: #f8f9ff;
+  padding: 15px 20px;
+  border: 1px solid #e1e5e9;
+}
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.timeline-status {
+  font-weight: 600;
+  color: #333;
+}
+.timeline-time {
+  font-size: 0.9rem;
+  color: #666;
+}
+.timeline-description {
+  margin: 0 0 8px 0;
+  color: #555;
+  line-height: 1.5;
+}
+.timeline-location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: #888;
+}
+.actions-section {
+  padding: 25px 30px;
+  background: #f8f9ff;
+  border-top: 1px solid #e1e5e9;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: 2px solid #e1e5e9;
+  background: white;
+  font-family: 'Prompt', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #666;
+}
+.action-btn.primary {
+  background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+  color: white;
+  border-color: transparent;
+}
+.action-btn
+.not-found {
+  background: white;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+.not-found-content i {
+  font-size: 4rem;
+  color: #ddd;
+  margin-bottom: 20px;
+}
+.not-found-content h3 {
+  font-size: 1.5rem;
+  color: #666;
+  margin: 0 0 15px 0;
+}
+.not-found-content p {
+  color: #888;
+  margin: 0 0 10px 0;
+}
+.search-term {
+  background: #f8f9fa;
+  padding: 10px 15px;
+  margin: 20px 0;
+}
+.suggestions {
+  text-align: left;
+  max-width: 400px;
+  margin: 25px auto;
+  background: #f8f9ff;
+  padding: 20px;
+}
+.suggestions h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+.suggestions ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.suggestions li {
+  margin-bottom: 5px;
+  color: #666;
+}
+.demo-section {
+  background: white;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+.demo-section h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: #333;
+  text-align: center;
+}
+.demo-orders {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.demo-order {
+  background: #f8f9ff;
+  padding: 20px;
+  border: 2px solid #e1e5e9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.demo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.demo-number {
+  font-family: monospace;
+  font-weight: 600;
+  color: #333;
+  background: white;
+  padding: 4px 8px;
+}
+.demo-status {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.demo-info p {
+  margin: 5px 0;
+  color: #666;
+}
+.demo-customer {
+  font-weight: 500;
+  color: #333 !important;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+}
+</style>
+<div class="status-page">
+  <div class="page-header">
+    <h1>ติดตามสถานะการส่งสินค้า</h1>
+    <p>ตรวจสอบสถานะคำสั่งซื้อและการจัดส่งของคุณ</p>
+  </div>
+  <div class="search-section">
+    <div class="search-container">
+      <h3>ค้นหาคำสั่งซื้อ</h3>
+      <div class="search-box">
+        <input 
+          type="text" 
+          placeholder="กรอกหมายเลขติดตามของคุณที่นี่..."
+          [(ngModel)]="searchTrackingNumber"
+          (keyup.enter)="searchOrder()"
+          class="search-input">
+        <button 
+          (click)="searchOrder()" 
+          [disabled]="isSearching"
+          class="search-btn">
+          {{ isSearching ? 'กำลังค้นหา...' : 'ค้นหา' }}
+        </button>
+        <button 
+          (click)="clearSearch()" 
+          *ngIf="searchTrackingNumber"
+          class="clear-btn">
+          ล้าง
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="results-section" *ngIf="selectedOrder || notFound">
+    <div class="order-details" *ngIf="selectedOrder">
+      <div class="order-summary">
+        <div class="order-header">
+          <div class="order-info">
+            <h2>{{ getStatusIcon(selectedOrder.status) }} คำสั่งซื้อ #{{ selectedOrder.order_id }}</h2>
+            <p class="customer-name">{{ selectedOrder.customer_name || selectedOrder.username }}</p>
+          </div>
+          <div class="status-badge" [class]="'status-' + selectedOrder.status">
+            {{ getStatusText(selectedOrder.status) }}
+          </div>
+        </div>
+        <div class="progress-section">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getStatusProgress(selectedOrder.status)"></div>
+          </div>
+          <div class="progress-steps">
+            <div class="step" [class.active]="getStatusProgress(selectedOrder.status) >= 10">
+              <span>รอดำเนินการ</span>
+            </div>
+            <div class="step" [class.active]="getStatusProgress(selectedOrder.status) >= 35">
+              <span>กำลังเตรียม</span>
+            </div>
+            <div class="step" [class.active]="getStatusProgress(selectedOrder.status) >= 80">
+              <span>กำลังจัดส่ง</span>
+            </div>
+            <div class="step" [class.active]="getStatusProgress(selectedOrder.status) >= 100">
+              <span>จัดส่งสำเร็จ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-card">
+          <h4><i class="fas fa-truck"></i> ข้อมูลคำสั่งซื้อ</h4>
+          <div class="info-item">
+            <span class="label">หมายเลขคำสั่งซื้อ:</span>
+            <span class="value tracking-number">#{{ selectedOrder.order_id }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">วันที่สั่งซื้อ:</span>
+            <span class="value">{{ formatDate(selectedOrder.order_date) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">ยอดรวม:</span>
+            <span class="value">{{ selectedOrder.total_amount | currency:'THB':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">สถานะชำระเงิน:</span>
+            <span class="value" [ngClass]="{'delivered-time': selectedOrder.payment_status === 'paid'}">
+              {{ selectedOrder.payment_status === 'paid' ? 'ชำระแล้ว' : 'ยังไม่ชำระ' }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="label">วิธีชำระเงิน:</span>
+            <span class="value">{{ selectedOrder.payment_method }}</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <h4><i class="fas fa-map-marker-alt"></i> ข้อมูลการจัดส่ง</h4>
+          <div class="info-item">
+            <span class="label">ชื่อลูกค้า:</span>
+            <span class="value">{{ selectedOrder.customer_name || selectedOrder.username }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">เบอร์โทรศัพท์:</span>
+            <span class="value">{{ selectedOrder.user_phone || selectedOrder.phone }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">ที่อยู่จัดส่ง:</span>
+            <span class="value">{{ selectedOrder.final_delivery_address || selectedOrder.delivery_address || selectedOrder.address }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="history-card" *ngIf="false">
+        <h4><i class="fas fa-history"></i> ประวัติการจัดส่ง</h4>
+        <div class="timeline">
+          <div class="timeline-item" *ngFor="let history of selectedOrder.statusHistory; let last = last" [class.current]="last">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-status">{{ getStatusText(history.status) }}</span>
+                <span class="timeline-time">{{ formatDate(history.timestamp) }}</span>
+              </div>
+              <p class="timeline-description">{{ history.description }}</p>
+              <span class="timeline-location" *ngIf="history.location">
+                <i class="fas fa-map-marker-alt"></i>
+                {{ history.location }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="actions-section">
+        <button class="action-btn primary" 
+                *ngIf="selectedOrder.status === 'pending' || selectedOrder.status === 'preparing'"
+                (click)="cancelOrder()"
+                style="background: #f44336; border-color: #f44336;">
+          <i class="fas fa-times-circle"></i>
+          ยกเลิกออเดอร์
+        </button>
+        <button class="action-btn" (click)="searchOrder()">
+          <i class="fas fa-sync-alt"></i>
+          รีเฟรชสถานะ
+        </button>
+      </div>
+    </div>
+    <div class="not-found" *ngIf="notFound">
+      <div class="not-found-content">
+        <i class="fas fa-search"></i>
+        <h3>ไม่พบคำสั่งซื้อ</h3>
+        <p>ไม่พบคำสั่งซื้อที่ตรงกับหมายเลขที่ค้นหา</p>
+        <p class="search-term">หมายเลขที่ค้นหา: <strong>{{ searchTrackingNumber }}</strong></p>
+        <div class="suggestions">
+          <h4>คำแนะนำ:</h4>
+          <ul>
+            <li>ตรวจสอบหมายเลขติดตามให้ถูกต้อง</li>
+            <li>ลองใช้หมายเลขคำสั่งซื้อแทน</li>
+            <li>ติดต่อ Customer Service หากยังมีปัญหา</li>
+          </ul>
+        </div>
+        <button class="action-btn primary" (click)="clearSearch()">
+          <i class="fas fa-search"></i>
+          ค้นหาใหม่
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
