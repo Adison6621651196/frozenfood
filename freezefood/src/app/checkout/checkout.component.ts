@@ -151,7 +151,7 @@ export class CheckoutComponent implements OnInit {
       if (this.paymentProofFile) {
         const formData = new FormData();
         formData.append('payment_proof', this.paymentProofFile);
-        const uploadResponse = await this.http.post<any>('${this.apiUrl}/upload-payment-proof', formData).toPromise();
+        const uploadResponse = await this.http.post<any>(`${this.apiUrl}/upload-payment-proof`, formData).toPromise();
         paymentProofPath = uploadResponse.filePath;
       }
       // เพิ่ม payment_proof ลงในข้อมูลออเดอร์
@@ -159,7 +159,7 @@ export class CheckoutComponent implements OnInit {
         (orderData as any).payment_proof = paymentProofPath;
       }
       // ส่งข้อมูลไปยัง backend
-      const response = await this.http.post<any>('${this.apiUrl}/orders', orderData).toPromise();
+      const response = await this.http.post<any>(`${this.apiUrl}/orders`, orderData).toPromise();
       if (response.success) {
         this.cartService.clearCart();
         this.router.navigate(['/order-success'], { queryParams: { orderId: response.orderId } });
