@@ -45,16 +45,27 @@ export class ForgotPasswordComponent {
     }
 
     this.isLoading = true;
+    logger.info('Sending OTP to:', this.email);
+    logger.info('API URL:', `${this.apiUrl}/forgot-password/send-otp`);
+
+    // Set timeout 15 seconds
+    const timeoutId = setTimeout(() => {
+      this.isLoading = false;
+      this.toastService.error('การเชื่อมต่อใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้ง');
+    }, 15000);
 
     this.http.post<any>(`${this.apiUrl}/forgot-password/send-otp`, {
       email: this.email
     }).subscribe({
       next: (response) => {
+        clearTimeout(timeoutId);
         this.isLoading = false;
+        logger.info('OTP sent successfully:', response);
         this.toastService.success('ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ');
         this.step = 2;
       },
       error: (error) => {
+        clearTimeout(timeoutId);
         this.isLoading = false;
         logger.error('Send OTP error:', error);
         this.toastService.error(error.error?.message || 'เกิดข้อผิดพลาดในการส่ง OTP');
