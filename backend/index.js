@@ -22,11 +22,23 @@ const app = express();
 // ============================================
 // CORS Configuration
 // ============================================
-// อนุญาตให้ Frontend (Angular) ที่รันบน localhost:4200 เรียกใช้ API ได้
-// credentials: true = อนุญาตให้ส่ง cookies/authentication headers
-// methods = กำหนดว่า HTTP methods ไหนที่อนุญาต
+// อนุญาตให้ Frontend (Angular) เรียกใช้ API ได้ทั้ง localhost และ production
+const allowedOrigins = [
+  'http://localhost:4200',
+  'https://localhost:4200',
+  process.env.FRONTEND_URL
+];
+
 app.use(cors({ 
-  origin: 'http://localhost:4200', 
+  origin: function (origin, callback) {
+    // อนุญาต requests ที่ไม่มี origin (เช่น Postman, mobile apps)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || !process.env.FRONTEND_URL) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']

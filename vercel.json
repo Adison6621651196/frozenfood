@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "buildCommand": "cd freezefood && npm install && npm run build",
+  "outputDirectory": "freezefood/dist/freezefood",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
