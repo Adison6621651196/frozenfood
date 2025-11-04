@@ -10,7 +10,7 @@ import logger from '../utils/logger';
   templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = environment.apiUrl;
   private returnUrl: string = '/';
   
   // ข้อมูลที่อยู่ไทย

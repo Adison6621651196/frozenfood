@@ -25,7 +25,7 @@ export interface OrderItem {
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
   getOrdersByUser(userId: string | number): Observable<Order[]> {

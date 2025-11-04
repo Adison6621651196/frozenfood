@@ -59,7 +59,7 @@ export class AdminComponent implements OnInit {
   selectedOrderForStatusUpdate: any = null;
   selectedOrderStatus: string = 'pending';
   orderStatusFilter: string = 'all';
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = environment.apiUrl;
   currentUser: any = null;
   constructor(
     private http: HttpClient,

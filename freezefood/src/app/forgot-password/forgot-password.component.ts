@@ -9,7 +9,7 @@ import logger from '../utils/logger';
   templateUrl: './forgot-password.component.html'
 })
 export class ForgotPasswordComponent {
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = environment.apiUrl;
 
   // Steps: 1 = กรอกอีเมล, 2 = กรอก OTP, 3 = รีเซ็ตรหัสผ่าน
   step: number = 1;
