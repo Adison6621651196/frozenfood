@@ -106,7 +106,7 @@ export class AdminComponent implements OnInit {
   }
   async loadAdminData() {
     try {
-      const ordersResponse: any = await this.http.get('http://localhost:3000/api/orders').toPromise();
+      const ordersResponse: any = await this.http.get(${this.apiUrl}/orders').toPromise();
       this.allOrders = (ordersResponse || []).filter((order: any) => 
         order.status === 'pending' || 
         (order.status === 'preparing' && order.payment_status === 'unpaid') ||
@@ -127,7 +127,7 @@ export class AdminComponent implements OnInit {
   }
   async loadProducts() {
     try {
-      const productsResponse: any = await this.http.get('http://localhost:3000/api/products').toPromise();
+      const productsResponse: any = await this.http.get(${this.apiUrl}/products').toPromise();
       this.allProducts = productsResponse || [];
       // Calculate out of stock count
       this.outOfStockCount = this.allProducts.filter(product => product.quantity <= 0).length;
@@ -158,7 +158,7 @@ export class AdminComponent implements OnInit {
         quantity: Number(newQty),
         product_image: product.product_image || ''
       };
-      await this.http.put(`http://localhost:3000/api/products/${product.product_id}`, payload).toPromise();
+      await this.http.put(`${this.apiUrl}/products/${product.product_id}`, payload).toPromise();
       this.toastService.success(`อัพเดตสต็อก ${product.product_name} เป็น ${newQty}`);
       // Refresh products
       await this.loadProducts();
@@ -193,7 +193,7 @@ export class AdminComponent implements OnInit {
           quantity: u.qty,
           product_image: u.product.product_image || ''
         };
-        await this.http.put(`http://localhost:3000/api/products/${u.product.product_id}`, payload).toPromise();
+        await this.http.put(`${this.apiUrl}/products/${u.product.product_id}`, payload).toPromise();
       }
       this.toastService.success('อัพเดตสต็อกเรียบร้อย');
       await this.loadProducts();
@@ -207,7 +207,7 @@ export class AdminComponent implements OnInit {
   }
   async loadCategories() {
     try {
-      const categoriesResponse: any = await this.http.get('http://localhost:3000/api/categories').toPromise();
+      const categoriesResponse: any = await this.http.get(${this.apiUrl}/categories').toPromise();
       this.allCategories = categoriesResponse || [];
     } catch (error) {
       console.error('Error loading categories:', error);
@@ -216,10 +216,10 @@ export class AdminComponent implements OnInit {
   async viewOrderDetails(orderId: string) {
     try {
       // Get order details
-      const orderResponse: any = await this.http.get(`http://localhost:3000/api/orders/${orderId}`).toPromise();
+      const orderResponse: any = await this.http.get(`${this.apiUrl}/orders/${orderId}`).toPromise();
       this.selectedOrder = orderResponse;
       // Get order items
-      const itemsResponse: any = await this.http.get(`http://localhost:3000/api/order-items/order/${orderId}`).toPromise();
+      const itemsResponse: any = await this.http.get(`${this.apiUrl}/order-items/order/${orderId}`).toPromise();
       this.orderItems = itemsResponse || [];
       // Set selected payment status to current order status
       this.selectedPaymentStatus = orderResponse.payment_status || 'unpaid';
@@ -254,7 +254,7 @@ export class AdminComponent implements OnInit {
     if (!this.selectedOrder) return;
     try {
       console.log('Updating payment status:', this.selectedOrder.order_id, this.selectedPaymentStatus);
-      const response = await this.http.put(`http://localhost:3000/api/orders/${this.selectedOrder.order_id}/payment-status`, { payment_status: this.selectedPaymentStatus }).toPromise();
+      const response = await this.http.put(`${this.apiUrl}/orders/${this.selectedOrder.order_id}/payment-status`, { payment_status: this.selectedPaymentStatus }).toPromise();
       console.log('Update response:', response);
   this.selectedOrder.payment_status = this.selectedPaymentStatus;
   this.toastService.success('อัพเดทสถานะการชำระเงินเรียบร้อย!');
@@ -280,7 +280,7 @@ export class AdminComponent implements OnInit {
       // ไม่ลบรายการสินค้า - เก็บไว้สำหรับการติดตาม
       // เปลี่ยนเฉพาะสถานะออเดอร์เป็น 'preparing'
       if (this.selectedOrder) {
-        await this.http.put(`http://localhost:3000/api/orders/${this.selectedOrder.order_id}/status`, { status: 'preparing' }).toPromise();
+        await this.http.put(`${this.apiUrl}/orders/${this.selectedOrder.order_id}/status`, { status: 'preparing' }).toPromise();
         // Update the order status locally
         this.selectedOrder.status = 'preparing';
         // Update the order in the list
@@ -333,7 +333,7 @@ export class AdminComponent implements OnInit {
   }
   async loadAllOrdersForDelivery() {
     try {
-      const ordersResponse: any = await this.http.get('http://localhost:3000/api/orders').toPromise();
+      const ordersResponse: any = await this.http.get(${this.apiUrl}/orders').toPromise();
       // For delivery management, show all orders regardless of status
       this.allOrders = ordersResponse || [];
       console.log('Loaded orders for delivery:', this.allOrders.length);
@@ -364,7 +364,7 @@ export class AdminComponent implements OnInit {
   
   async generateProductId(): Promise<string> {
     try {
-      const products: any = await this.http.get('http://localhost:3000/api/products').toPromise();
+      const products: any = await this.http.get(${this.apiUrl}/products').toPromise();
       
       let maxNumber = 0;
       products.forEach((product: any) => {
@@ -412,7 +412,7 @@ export class AdminComponent implements OnInit {
     this.selectedImageFile = null;
     // Set preview to existing image if available
     if (product.product_image) {
-      this.imagePreviewUrl = `http://localhost:3000/${product.product_image}`;
+      this.imagePreviewUrl = `${this.apiUrl.replace('/api', '')}/${product.product_image}`;
     } else {
       this.imagePreviewUrl = null;
     }
@@ -429,10 +429,10 @@ export class AdminComponent implements OnInit {
       
       // บันทึกข้อมูลสินค้า
       if (this.isEditMode) {
-        await this.http.put(`http://localhost:3000/api/products/${this.selectedProduct.product_id}`, this.productForm).toPromise();
+        await this.http.put(`${this.apiUrl}/products/${this.selectedProduct.product_id}`, this.productForm).toPromise();
         this.toastService.success('แก้ไขสินค้าเรียบร้อย!');
       } else {
-        await this.http.post('http://localhost:3000/api/products', this.productForm).toPromise();
+        await this.http.post(${this.apiUrl}/products', this.productForm).toPromise();
         this.toastService.success('เพิ่มสินค้าเรียบร้อย!');
       }
       
@@ -452,7 +452,7 @@ export class AdminComponent implements OnInit {
       formData.append('image', file);
       
       // ส่งไปยัง backend upload endpoint
-      const response: any = await this.http.post('http://localhost:3000/api/upload', formData).toPromise();
+      const response: any = await this.http.post(${this.apiUrl}/upload', formData).toPromise();
       console.log('Image uploaded successfully:', response);
       
       // Return path ที่ backend ส่งกลับมา
@@ -467,7 +467,7 @@ export class AdminComponent implements OnInit {
   async createNewCategory(categoryName: string): Promise<string | null> {
     try {
       // ดึง category_id ล่าสุด
-      const categories: any = await this.http.get('http://localhost:3000/api/categories').toPromise();
+      const categories: any = await this.http.get(${this.apiUrl}/categories').toPromise();
       
       let maxNumber = 0;
       categories.forEach((cat: any) => {
@@ -482,7 +482,7 @@ export class AdminComponent implements OnInit {
       const newCategoryId = 'C' + (maxNumber + 1).toString().padStart(3, '0');
 
       // สร้างหมวดหมู่ใหม่
-      await this.http.post('http://localhost:3000/api/categories', {
+      await this.http.post(${this.apiUrl}/categories', {
         category_id: newCategoryId,
         category_name: categoryName
       }).toPromise();
@@ -511,7 +511,7 @@ export class AdminComponent implements OnInit {
     }
 
     try {
-      await this.http.delete(`http://localhost:3000/api/products/${productId}`).toPromise();
+      await this.http.delete(`${this.apiUrl}/products/${productId}`).toPromise();
       this.toastService.success('ลบสินค้าเรียบร้อย!');
       await this.loadProducts();
       await this.loadStockItems(); // โหลดข้อมูล Stock Items ใหม่เพื่ออัพเดทจำนวน
@@ -576,13 +576,13 @@ export class AdminComponent implements OnInit {
       if (this.isEditCategoryMode) {
         // แก้ไขหมวดหมู่
         await this.http.put(
-          `http://localhost:3000/api/categories/${this.selectedCategory.category_id}`,
+          `${this.apiUrl}/categories/${this.selectedCategory.category_id}`,
           { category_name: this.categoryForm.category_name }
         ).toPromise();
         this.toastService.success('แก้ไขหมวดหมู่เรียบร้อย!');
       } else {
         // เพิ่มหมวดหมู่ใหม่
-        const categories: any = await this.http.get('http://localhost:3000/api/categories').toPromise();
+        const categories: any = await this.http.get(${this.apiUrl}/categories').toPromise();
         
         let maxNumber = 0;
         categories.forEach((cat: any) => {
@@ -596,7 +596,7 @@ export class AdminComponent implements OnInit {
 
         const newCategoryId = 'C' + (maxNumber + 1).toString().padStart(3, '0');
 
-        await this.http.post('http://localhost:3000/api/categories', {
+        await this.http.post(${this.apiUrl}/categories', {
           category_id: newCategoryId,
           category_name: this.categoryForm.category_name
         }).toPromise();
@@ -630,7 +630,7 @@ export class AdminComponent implements OnInit {
     }
 
     try {
-      await this.http.delete(`http://localhost:3000/api/categories/${categoryId}`).toPromise();
+      await this.http.delete(`${this.apiUrl}/categories/${categoryId}`).toPromise();
       this.toastService.success('ลบหมวดหมู่เรียบร้อย!');
       await this.loadCategories();
     } catch (error: any) {
@@ -739,7 +739,7 @@ export class AdminComponent implements OnInit {
   getImageUrl(imageName: string): string {
     // Remove 'image/' prefix if it exists, since backend already serves from /image/ route
     const cleanImageName = imageName.startsWith('image/') ? imageName.substring(6) : imageName;
-    const baseUrl = 'http://localhost:3000/image/';
+    const baseUrl = ${this.apiUrl.replace('/api', '')}/image/';
     return baseUrl + cleanImageName;
   }
 
@@ -751,10 +751,10 @@ export class AdminComponent implements OnInit {
     }
     // If path starts with /, prepend base URL
     if (paymentProofPath.startsWith('/')) {
-      return 'http://localhost:3000' + paymentProofPath;
+      return this.apiUrl.replace('/api', '') + paymentProofPath;
     }
     // Otherwise, assume it's a relative path
-    return 'http://localhost:3000/' + paymentProofPath;
+    return ${this.apiUrl.replace('/api', '')}/' + paymentProofPath;
   }
 
   getProductById(productId: string): any {
@@ -975,7 +975,7 @@ export class AdminComponent implements OnInit {
     }
     try {
       console.log('Updating order status:', this.selectedOrderForStatusUpdate.order_id, newStatus);
-      await this.http.put(`http://localhost:3000/api/orders/${this.selectedOrderForStatusUpdate.order_id}/status`, { status: newStatus }).toPromise();
+      await this.http.put(`${this.apiUrl}/orders/${this.selectedOrderForStatusUpdate.order_id}/status`, { status: newStatus }).toPromise();
       // Update local order data
       this.selectedOrderForStatusUpdate.status = newStatus;
       // Refresh orders list
@@ -1168,3 +1168,4 @@ export class AdminComponent implements OnInit {
     }
   }
 }
+

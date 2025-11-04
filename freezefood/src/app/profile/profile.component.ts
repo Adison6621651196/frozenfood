@@ -3,12 +3,14 @@ import logger from '../utils/logger';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../services/toast.service';
 import { ThailandAddressService, Province, District, SubDistrict } from '../services/thailand-address.service';
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+  private apiUrl = environment.apiUrl;
   userProfile: any = {
     username: '',
     email: '',
@@ -101,7 +103,7 @@ export class ProfileComponent implements OnInit {
     }
 
     // เรียก API เพื่อดึง 3 ออเดอร์ล่าสุด
-    this.http.get<any[]>(`http://localhost:3000/api/orders/user/${currentUser.user_id}`)
+    this.http.get<any[]>(`${this.apiUrl}/orders/user/${currentUser.user_id}`)
       .subscribe({
         next: (orders) => {
           // เอาแค่ 3 ออเดอร์ล่าสุด
@@ -126,7 +128,7 @@ export class ProfileComponent implements OnInit {
     const fullAddress = this.buildFullAddress();
 
     // เรียก API เพื่ออัพเดตข้อมูล
-    this.http.put(`http://localhost:3000/api/users/${currentUser.user_id}`, {
+    this.http.put(`${this.apiUrl}/users/${currentUser.user_id}`, {
       username: this.userProfile.username,
       email: this.userProfile.email,
       phone: this.userProfile.phone,
@@ -171,7 +173,7 @@ export class ProfileComponent implements OnInit {
     }
 
     // เรียก API เพื่อเปลี่ยนรหัสผ่าน
-    this.http.put(`http://localhost:3000/api/users/${currentUser.user_id}/change-password`, {
+    this.http.put(`${this.apiUrl}/users/${currentUser.user_id}/change-password`, {
       currentPassword: this.passwordData.currentPassword,
       newPassword: this.passwordData.newPassword
     }).subscribe({
@@ -295,3 +297,4 @@ export class ProfileComponent implements OnInit {
     return true;
   }
 }
+

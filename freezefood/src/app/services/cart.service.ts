@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 export interface CartItem {
   product_id: string;  // เปลี่ยนเป็น string
   product_name: string;
@@ -30,9 +31,10 @@ export class CartService {
       // สร้าง full URL สำหรับรูปภาพ
       let imageUrl = 'assets/placeholder.svg';
       if (product.image) {
+        const baseUrl = environment.apiUrl.replace('/api', '');
         imageUrl = product.image.startsWith('http') 
           ? product.image 
-          : `http://localhost:3000/${product.image}`;
+          : `${baseUrl}/${product.image}`;
       }
       const newItem: CartItem = {
         product_id: product.product_id,

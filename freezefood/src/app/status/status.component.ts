@@ -30,12 +30,14 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import logger from '../utils/logger';
 import { ToastService } from '../services/toast.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-status',
   templateUrl: './status.component.html'
 })
 export class StatusComponent implements OnInit {
+  private apiUrl = environment.apiUrl;
   searchTrackingNumber: string = '';
   selectedOrder: any = null;
   isSearching: boolean = false;
@@ -175,7 +177,7 @@ export class StatusComponent implements OnInit {
     // ลบ # ออกถ้ามี (เพื่อให้สามารถค้นหาได้ทั้งกรณี #O001 และ O001)
     const cleanOrderId = this.searchTrackingNumber.trim().replace(/^#/, '');
     
-    this.http.get<any>(`http://localhost:3000/api/orders/${cleanOrderId}`)
+    this.http.get<any>(`${this.apiUrl}/orders/${cleanOrderId}`)
       .subscribe({
         next: (order) => {
           this.selectedOrder = order;
@@ -271,7 +273,7 @@ export class StatusComponent implements OnInit {
       return;
     }
     
-    this.http.put(`http://localhost:3000/api/orders/${this.selectedOrder.order_id}/cancel`, { userId })
+    this.http.put(`${this.apiUrl}/orders/${this.selectedOrder.order_id}/cancel`, { userId })
       .subscribe({
         next: (response: any) => {
           this.toastService.success('ยกเลิกออเดอร์สำเร็จ');
@@ -285,3 +287,4 @@ export class StatusComponent implements OnInit {
       });
   }
 }
+
