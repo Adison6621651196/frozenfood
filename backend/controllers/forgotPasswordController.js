@@ -10,8 +10,8 @@ const otpStore = new Map();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'oofoofgt36@gmail.com', // ใส่ email ของคุณ
-    pass: 'fdty llaf eirc qxlr' // ใช้ App Password จาก Google (ไม่ใช่รหัสผ่านปกติ)
+    user: process.env.GMAIL_USER || 'oofoofgt36@gmail.com',
+    pass: process.env.GMAIL_APP_PASSWORD || 'fdty llaf eirc qxlr'
   }
 });
 
@@ -89,11 +89,17 @@ export const sendOTP = async (req, res) => {
       console.log(`✅ ส่ง OTP สำเร็จไปยัง ${email}`);
     } catch (emailError) {
       console.error('❌ ส่ง email ไม่สำเร็จ:', emailError);
+      console.error('❌ Email Error Details:', emailError.message);
       // ถึงแม้ส่ง email ไม่สำเร็จ ก็ยังคงแสดง debug_otp เพื่อให้ระบบใช้งานได้
     }
 
+    // สำหรับ Development/Testing: แสดง OTP ใน response
+    // ⚠️ Production: ควรลบออก!
+    const isDevelopment = process.env.NODE_ENV !== 'production';
+    
     res.json({ 
-      message: 'ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ'
+      message: 'ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ',
+      ...(isDevelopment && { debug_otp: otp, debug_email: email }) // แสดง OTP เฉพาะ dev mode
     });
 
   } catch (error) {
