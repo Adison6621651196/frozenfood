@@ -14,8 +14,8 @@ export const getAllOrders = async (req, res) => {
              u.phone as user_phone,
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
-      FROM Orders o
-      JOIN Users u ON o.user_id = u.user_id
+      FROM orders o
+      JOIN users u ON o.user_id = u.user_id
       ORDER BY o.order_date DESC
     `;
     const [results] = await db.query(sql);
@@ -41,8 +41,8 @@ export const getOrderById = async (req, res) => {
              u.phone as user_phone,
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
-      FROM Orders o
-      LEFT JOIN Users u ON o.user_id = u.user_id
+      FROM orders o
+      LEFT JOIN users u ON o.user_id = u.user_id
       WHERE o.order_id = ?
     `;
     const [results] = await db.query(sql, [id]);
@@ -90,7 +90,7 @@ export const createOrder = async (req, res) => {
     await connection.beginTransaction();
 
     // หา order_id ล่าสุดเพื่อสร้าง ID ใหม่แบบเรียงลำดับ O001, O002, O003...
-    const [results] = await connection.query('SELECT order_id FROM Orders ORDER BY order_id DESC LIMIT 1');
+    const [results] = await connection.query('SELECT order_id FROM orders ORDER BY order_id DESC LIMIT 1');
 
     let nextNumber = 1;
     if (results.length > 0) {
@@ -107,7 +107,7 @@ export const createOrder = async (req, res) => {
 
     // บันทึกข้อมูลออร์เดอร์
     const orderSql = `
-      INSERT INTO Orders (
+      INSERT INTO orders (
         order_id, user_id, customer_name, phone, order_date, 
         payment_method, payment_status, payment_proof, 
         paid_at, status, delivery_address, total_amount
@@ -134,7 +134,7 @@ export const createOrder = async (req, res) => {
     if (order_items && order_items.length > 0) {
       // ดึง orderitem_id สุดท้ายเพื่อสร้าง ID ใหม่แบบเรียงลำดับ
       const [lastItemResult] = await connection.query(
-        'SELECT orderitem_id FROM OrderItems WHERE orderitem_id LIKE "OT%" ORDER BY CAST(SUBSTRING(orderitem_id, 3) AS UNSIGNED) DESC LIMIT 1'
+        'SELECT orderitem_id FROM orderitems WHERE orderitem_id LIKE "OT%" ORDER BY CAST(SUBSTRING(orderitem_id, 3) AS UNSIGNED) DESC LIMIT 1'
       );
       
       let nextItemNumber = 1;
@@ -149,7 +149,7 @@ export const createOrder = async (req, res) => {
       }
 
       const itemSql = `
-        INSERT INTO OrderItems (orderitem_id, order_id, product_id, quantity, price)
+        INSERT INTO orderitems (orderitem_id, order_id, product_id, quantity, price)
         VALUES ?
       `;
 
@@ -202,7 +202,7 @@ export const updateOrder = async (req, res) => {
     }
 
     await db.query(
-      `UPDATE Orders 
+      `UPDATE orders 
        SET user_id = ?, customer_name = ?, phone = ?, order_date = ?, payment_method = ?, payment_status = ?, delivery_address = ?, total_amount = ?
        WHERE order_id = ?`,
       [user_id, customer_name, phone, order_date, payment_method, payment_status, delivery_address, total_amount, id]
@@ -222,11 +222,11 @@ export const deleteOrder = async (req, res) => {
     logger.info('Deleting order:', id);
     
     // ลบ OrderItems ก่อน (เพราะมี Foreign Key constraint)
-    const [deleteItemsResult] = await db.query('DELETE FROM OrderItems WHERE order_id = ?', [id]);
+    const [deleteItemsResult] = await db.query('DELETE FROM orderitems WHERE order_id = ?', [id]);
     logger.debug('Deleted OrderItems:', deleteItemsResult.affectedRows, 'items');
     
     // จากนั้นลบ Order
-    const [deleteOrderResult] = await db.query('DELETE FROM Orders WHERE order_id = ?', [id]);
+    const [deleteOrderResult] = await db.query('DELETE FROM orders WHERE order_id = ?', [id]);
     logger.debug('Deleted Order:', deleteOrderResult.affectedRows, 'order');
     
     if (deleteOrderResult.affectedRows === 0) {
@@ -258,7 +258,7 @@ export const updatePaymentStatus = async (req, res) => {
     }
 
     const [result] = await db.query(
-      'UPDATE Orders SET payment_status = ? WHERE order_id = ?',
+      'UPDATE orders SET payment_status = ? WHERE order_id = ?',
       [payment_status, id]
     );
     
@@ -285,7 +285,7 @@ export const updateOrderStatus = async (req, res) => {
     }
 
     const [result] = await db.query(
-      'UPDATE Orders SET status = ? WHERE order_id = ?',
+      'UPDATE orders SET status = ? WHERE order_id = ?',
       [status, id]
     );
     
@@ -319,8 +319,8 @@ export const trackOrderByPhoneAndOrderId = async (req, res) => {
              u.address as user_address,
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
-      FROM Orders o
-      JOIN Users u ON o.user_id = u.user_id
+      FROM orders o
+      JOIN users u ON o.user_id = u.user_id
       WHERE o.order_id = ? AND (o.phone = ? OR u.phone = ?)
     `;
 
@@ -384,8 +384,8 @@ export const getOrdersByUserId = async (req, res) => {
              u.address as user_address,
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
-      FROM Orders o
-      JOIN Users u ON o.user_id = u.user_id
+      FROM orders o
+      JOIN users u ON o.user_id = u.user_id
       WHERE o.user_id = ?
       ORDER BY o.order_date DESC
     `;
@@ -418,7 +418,7 @@ export const cancelOrderByUser = async (req, res) => {
     // ตรวจสอบว่าออร์เดอร์เป็นของผู้ใช้และสามารถยกเลิกได้
     const checkSql = `
       SELECT order_id, user_id, status, payment_status 
-      FROM Orders 
+      FROM orders 
       WHERE order_id = ? AND user_id = ?
     `;
 
@@ -445,7 +445,7 @@ export const cancelOrderByUser = async (req, res) => {
     // ดึงรายการสินค้าในออร์เดอร์เพื่อคืนจำนวนสต็อก
     const getOrderItemsSql = `
       SELECT product_id, quantity 
-      FROM OrderItems 
+      FROM orderitems 
       WHERE order_id = ?
     `;
 
@@ -453,7 +453,7 @@ export const cancelOrderByUser = async (req, res) => {
 
     // อัปเดตสถานะเป็น cancelled
     const updateSql = `
-      UPDATE Orders 
+      UPDATE orders 
       SET status = 'cancelled' 
       WHERE order_id = ? AND user_id = ?
     `;
@@ -493,8 +493,8 @@ export const calculateAndUpdateOrderTotal = async (req, res) => {
     // คำนวณราคารวมจาก OrderItems
     const calculateTotalSql = `
       SELECT SUM(oi.quantity * p.price) as total_amount
-      FROM OrderItems oi
-      JOIN Products p ON oi.product_id = p.product_id
+      FROM orderitems oi
+      JOIN products p ON oi.product_id = p.product_id
       WHERE oi.order_id = ?
     `;
 
@@ -503,7 +503,7 @@ export const calculateAndUpdateOrderTotal = async (req, res) => {
 
     // อัปเดตยอดรวมในตาราง Orders
     const updateTotalSql = `
-      UPDATE Orders 
+      UPDATE orders 
       SET total_amount = ?
       WHERE order_id = ?
     `;
@@ -532,7 +532,7 @@ export const updateDeliveryAddress = async (req, res) => {
     }
 
     const [result] = await db.query(
-      `UPDATE Orders 
+      `UPDATE orders 
        SET delivery_address = ?
        WHERE order_id = ?`,
       [delivery_address, order_id]
@@ -557,8 +557,8 @@ export const updateDeliveryAddress = async (req, res) => {
 export const syncDeliveryAddressFromUsers = async (req, res) => {
   try {
     const sql = `
-      UPDATE Orders o 
-      JOIN Users u ON o.user_id = u.user_id 
+      UPDATE orders o 
+      JOIN users u ON o.user_id = u.user_id 
       SET o.delivery_address = u.address 
       WHERE o.delivery_address IS NULL AND u.address IS NOT NULL AND u.address != '-'
     `;
@@ -574,3 +574,4 @@ export const syncDeliveryAddressFromUsers = async (req, res) => {
     res.status(500).json({ error: err.message || 'Failed to sync delivery addresses' });
   }
 };
+

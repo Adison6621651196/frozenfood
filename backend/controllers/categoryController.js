@@ -16,7 +16,7 @@ const db = mysql.createConnection({
 // ดึงหมวดหมู่ทั้งหมด
 // GET /api/categories
 export const getAllCategories = (req, res) => {
-  db.query('SELECT * FROM Categories', (err, results) => {
+  db.query('SELECT * FROM categories', (err, results) => {
     if (err) {
       logger.error('Error fetching categories:', err);
       return res.status(500).json({ error: err });
@@ -30,7 +30,7 @@ export const getAllCategories = (req, res) => {
 export const getCategoryById = (req, res) => {
   
   const { id } = req.params;
-  db.query('SELECT * FROM Categories WHERE category_id = ?', [id], (err, results) => {
+  db.query('SELECT * FROM categories WHERE category_id = ?', [id], (err, results) => {
     if (err) {
       logger.error('Error fetching category by id:', err);
       return res.status(500).json({ error: err });
@@ -46,7 +46,7 @@ export const getCategoryById = (req, res) => {
 export const createCategory = (req, res) => {
   const { category_id, category_name } = req.body;
   db.query(
-    'INSERT INTO Categories (category_id, category_name) VALUES (?, ?)',
+    'INSERT INTO categories (category_id, category_name) VALUES (?, ?)',
     [category_id, category_name],
     (err) => {
       if (err) {
@@ -65,7 +65,7 @@ export const updateCategory = (req, res) => {
   const { id } = req.params;
   const { category_name } = req.body;
   db.query(
-    'UPDATE Categories SET category_name=? WHERE category_id=?',
+    'UPDATE categories SET category_name=? WHERE category_id=?',
     [category_name, id],
     (err) => {
       if (err) {
@@ -83,7 +83,7 @@ export const deleteCategory = (req, res) => {
   const { id } = req.params;
   
   // ตรวจสอบว่ามีสินค้าที่ใช้หมวดหมู่นี้อยู่หรือไม่
-  db.query('SELECT COUNT(*) as count FROM Products WHERE category_id = ?', [id], (err, results) => {
+  db.query('SELECT COUNT(*) as count FROM products WHERE category_id = ?', [id], (err, results) => {
     if (err) {
       logger.error('Error checking category usage:', err);
       return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการตรวจสอบข้อมูล' });
@@ -98,7 +98,7 @@ export const deleteCategory = (req, res) => {
     }
     
     // ถ้าไม่มีสินค้าใช้หมวดหมู่นี้ ให้ลบได้
-    db.query('DELETE FROM Categories WHERE category_id=?', [id], (err) => {
+    db.query('DELETE FROM categories WHERE category_id=?', [id], (err) => {
       if (err) {
         logger.error('Error deleting category:', err);
         return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการลบหมวดหมู่' });
@@ -107,3 +107,4 @@ export const deleteCategory = (req, res) => {
     });
   });
 };
+

@@ -463,3 +463,4 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ error: 'Error resetting password' });
   }
 };
+

@@ -92,7 +92,7 @@ export const deleteProduct = async (req, res) => {
     
     // ตรวจสอบว่ามี Order Items ที่ใช้สินค้านี้หรือไม่
     const [orderItems] = await db.query(
-      'SELECT COUNT(*) as count FROM OrderItems WHERE product_id = ?', 
+      'SELECT COUNT(*) as count FROM orderitems WHERE product_id = ?', 
       [id]
     );
     
@@ -221,3 +221,4 @@ export const updateMultipleProductQuantities = async (products, increase = false
     throw err;
   }
 };
+
