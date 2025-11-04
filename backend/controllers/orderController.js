@@ -5,6 +5,7 @@ import { updateMultipleProductQuantities } from './productController.js';
 // ดึงออร์เดอร์ทั้งหมด + username และ phone ของ user
 export const getAllOrders = async (req, res) => {
   try {
+    logger.info('Getting all orders...');
     const sql = `
       SELECT o.*, 
              u.username, 
@@ -18,9 +19,11 @@ export const getAllOrders = async (req, res) => {
       ORDER BY o.order_date DESC
     `;
     const [results] = await db.query(sql);
+    logger.info(`Found ${results.length} orders`);
     res.json(results);
   } catch (err) {
-    res.status(500).json({ error: err });
+    logger.error('Error getting all orders:', err.message, err.stack);
+    res.status(500).json({ error: err.message, details: err.toString() });
   }
 };
 
