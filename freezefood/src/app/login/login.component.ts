@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
 import { ThailandAddressService, Province, District, SubDistrict } from '../services/thailand-address.service';
 import logger from '../utils/logger';
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html'

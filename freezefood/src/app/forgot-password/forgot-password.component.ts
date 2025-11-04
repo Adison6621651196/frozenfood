@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ToastService } from '../services/toast.service';
 import logger from '../utils/logger';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-forgot-password',
