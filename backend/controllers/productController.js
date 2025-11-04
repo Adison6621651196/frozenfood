@@ -19,7 +19,7 @@ const toRelativeImagePath = (p) => {
 // Response: Array ของสินค้าทั้งหมดในระบบ
 export const getAllProducts = async (req, res) => {
   try {
-    const [results] = await db.query('SELECT * FROM Products');
+    const [results] = await db.query('SELECT * FROM products');
     res.json(results);
   } catch (err) {
     res.status(500).json({ error: err });
@@ -32,7 +32,7 @@ export const getAllProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
-    const [results] = await db.query('SELECT * FROM Products WHERE product_id = ?', [id]);
+    const [results] = await db.query('SELECT * FROM products WHERE product_id = ?', [id]);
     if (results.length === 0) return res.status(404).json({ message: 'Product not found' });
     res.json(results[0]);
   } catch (err) {
@@ -50,7 +50,7 @@ export const createProduct = async (req, res) => {
     const relPath = toRelativeImagePath(product_image);
 
     const [result] = await db.query(
-      'INSERT INTO Products (product_id, product_name, category_id, price, quantity, product_image) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO products (product_id, product_name, category_id, price, quantity, product_image) VALUES (?, ?, ?, ?, ?, ?)',
       [product_id, product_name, category_id, price, quantity, relPath]
     );
     res.status(201).json({ message: 'Product created', id: result.insertId });
@@ -67,7 +67,7 @@ export const updateProduct = async (req, res) => {
     const relPath = toRelativeImagePath(product_image);
 
     await db.query(
-      'UPDATE Products SET product_name = ?, category_id = ?, price = ?, quantity = ?, product_image = ? WHERE product_id = ?',
+      'UPDATE products SET product_name = ?, category_id = ?, price = ?, quantity = ?, product_image = ? WHERE product_id = ?',
       [product_name, category_id, price, quantity, relPath, id]
     );
     
@@ -117,7 +117,7 @@ export const deleteProduct = async (req, res) => {
     }
     
     // ถ้าไม่มีข้อมูลที่อ้างอิง ให้ลบได้
-    await db.query('DELETE FROM Products WHERE product_id = ?', [id]);
+    await db.query('DELETE FROM products WHERE product_id = ?', [id]);
     res.json({ message: 'Product deleted' });
   } catch (err) {
     logger.error('Error deleting product:', err);
@@ -131,7 +131,7 @@ export const decreaseProductQuantity = async (req, res) => {
     const { product_id, quantity } = req.body;
     
     // ตรวจสอบจำนวนสินค้าปัจจุบัน
-    const [results] = await db.query('SELECT quantity FROM Products WHERE product_id = ?', [product_id]);
+    const [results] = await db.query('SELECT quantity FROM products WHERE product_id = ?', [product_id]);
     if (results.length === 0) return res.status(404).json({ message: 'Product not found' });
     
     const currentQuantity = results[0].quantity;
@@ -143,7 +143,7 @@ export const decreaseProductQuantity = async (req, res) => {
     
     // ลดจำนวนสินค้า
     await db.query(
-      'UPDATE Products SET quantity = quantity - ? WHERE product_id = ?',
+      'UPDATE products SET quantity = quantity - ? WHERE product_id = ?',
       [quantity, product_id]
     );
     
@@ -166,12 +166,12 @@ export const increaseProductQuantity = async (req, res) => {
     
     // เพิ่มจำนวนสินค้า
     await db.query(
-      'UPDATE Products SET quantity = quantity + ? WHERE product_id = ?',
+      'UPDATE products SET quantity = quantity + ? WHERE product_id = ?',
       [quantity, product_id]
     );
     
     // ดึงจำนวนใหม่
-    const [results] = await db.query('SELECT quantity FROM Products WHERE product_id = ?', [product_id]);
+    const [results] = await db.query('SELECT quantity FROM products WHERE product_id = ?', [product_id]);
     const newQuantity = results[0].quantity;
     
     // อัพเดทจำนวนใน StockItem ที่เกี่ยวข้องด้วย
@@ -194,8 +194,8 @@ export const updateMultipleProductQuantities = async (products, increase = false
 
   try {
     const sql = increase 
-      ? 'UPDATE Products SET quantity = quantity + ? WHERE product_id = ?'
-      : 'UPDATE Products SET quantity = quantity - ? WHERE product_id = ?';
+      ? 'UPDATE products SET quantity = quantity + ? WHERE product_id = ?'
+      : 'UPDATE products SET quantity = quantity - ? WHERE product_id = ?';
     
     // ใช้ Promise.all เพื่ออัปเดตทั้งหมดพร้อมกัน
     await Promise.all(
@@ -206,7 +206,7 @@ export const updateMultipleProductQuantities = async (products, increase = false
     
     // อัพเดท StockItem ทุกรายการที่เกี่ยวข้อง
     for (const item of products) {
-      const [results] = await db.query('SELECT quantity FROM Products WHERE product_id = ?', [item.product_id]);
+      const [results] = await db.query('SELECT quantity FROM products WHERE product_id = ?', [item.product_id]);
       if (results.length > 0) {
         await db.query(
           'UPDATE StockItem SET quantity = ? WHERE product_id = ?',
@@ -221,5 +221,6 @@ export const updateMultipleProductQuantities = async (products, increase = false
     throw err;
   }
 };
+
 
 

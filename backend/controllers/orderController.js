@@ -15,7 +15,7 @@ export const getAllOrders = async (req, res) => {
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
       FROM Orders o
-      JOIN Users u ON o.user_id = u.user_id
+      JOIN users u ON o.user_id = u.user_id
       ORDER BY o.order_date DESC
     `;
     const [results] = await db.query(sql);
@@ -42,7 +42,7 @@ export const getOrderById = async (req, res) => {
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
       FROM Orders o
-      LEFT JOIN Users u ON o.user_id = u.user_id
+      LEFT JOIN users u ON o.user_id = u.user_id
       WHERE o.order_id = ?
     `;
     const [results] = await db.query(sql, [id]);
@@ -320,7 +320,7 @@ export const trackOrderByPhoneAndOrderId = async (req, res) => {
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
       FROM Orders o
-      JOIN Users u ON o.user_id = u.user_id
+      JOIN users u ON o.user_id = u.user_id
       WHERE o.order_id = ? AND (o.phone = ? OR u.phone = ?)
     `;
 
@@ -385,7 +385,7 @@ export const getOrdersByUserId = async (req, res) => {
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
       FROM Orders o
-      JOIN Users u ON o.user_id = u.user_id
+      JOIN users u ON o.user_id = u.user_id
       WHERE o.user_id = ?
       ORDER BY o.order_date DESC
     `;
@@ -558,7 +558,7 @@ export const syncDeliveryAddressFromUsers = async (req, res) => {
   try {
     const sql = `
       UPDATE Orders o 
-      JOIN Users u ON o.user_id = u.user_id 
+      JOIN users u ON o.user_id = u.user_id 
       SET o.delivery_address = u.address 
       WHERE o.delivery_address IS NULL AND u.address IS NOT NULL AND u.address != '-'
     `;
@@ -574,5 +574,6 @@ export const syncDeliveryAddressFromUsers = async (req, res) => {
     res.status(500).json({ error: err.message || 'Failed to sync delivery addresses' });
   }
 };
+
 
 

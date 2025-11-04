@@ -25,7 +25,7 @@ db.connect((err) => {
 
 // ดึงผู้ใช้ทั้งหมด
 export const getAllUsers = (req, res) => {
-  db.query('SELECT user_id, username, email, role, phone, address FROM Users', (err, results) => {
+  db.query('SELECT user_id, username, email, role, phone, address FROM users', (err, results) => {
     if (err) return res.status(500).json({ error: err });
     res.json(results);
   });
@@ -35,7 +35,7 @@ export const getAllUsers = (req, res) => {
 export const getUserById = (req, res) => {
   const { id } = req.params;
   db.query(
-    'SELECT user_id, username, email, role, phone, address FROM Users WHERE user_id = ?',
+    'SELECT user_id, username, email, role, phone, address FROM users WHERE user_id = ?',
     [id],
     (err, results) => {
       if (err) return res.status(500).json({ error: err });
@@ -54,7 +54,7 @@ export const createUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     db.query(
-      'INSERT INTO Users (user_id, username, email, password, role, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO users (user_id, username, email, password, role, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [user_id, username, email, hashedPassword, role, phone, address],
       (err, result) => {
         if (err) return res.status(500).json({ error: err });
@@ -81,7 +81,7 @@ export const registerUser = async (req, res) => {
     
     // ตรวจสอบว่าอีเมลมีอยู่แล้วหรือไม่
     db.query(
-      'SELECT user_id FROM Users WHERE email = ?',
+      'SELECT user_id FROM users WHERE email = ?',
       [email],
       (err, results) => {
         if (err) {
@@ -95,7 +95,7 @@ export const registerUser = async (req, res) => {
         
         // สร้าง user_id ใหม่ โดยดึงหมายเลขสูงสุดจากฐานข้อมูล
         db.query(
-          'SELECT user_id FROM Users WHERE user_id LIKE "U%" ORDER BY CAST(SUBSTRING(user_id, 2) AS UNSIGNED) DESC LIMIT 1',
+          'SELECT user_id FROM users WHERE user_id LIKE "U%" ORDER BY CAST(SUBSTRING(user_id, 2) AS UNSIGNED) DESC LIMIT 1',
           [],
           (err, results) => {
             if (err) {
@@ -114,7 +114,7 @@ export const registerUser = async (req, res) => {
             
             // บันทึกผู้ใช้ใหม่ด้วย hashed password
             db.query(
-              'INSERT INTO Users (user_id, username, email, password, role, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)',
+              'INSERT INTO users (user_id, username, email, password, role, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)',
               [newUserId, username, email, hashedPassword, 'user', phone, address],
               (err, result) => {
                 if (err) {
@@ -182,7 +182,7 @@ export const updateUser = async (req, res) => {
     }
 
     values.push(id);
-    const sql = `UPDATE Users SET ${updateFields.join(', ')} WHERE user_id = ?`;
+    const sql = `UPDATE users SET ${updateFields.join(', ')} WHERE user_id = ?`;
 
     db.query(sql, values, (err, result) => {
       if (err) {
@@ -203,7 +203,7 @@ export const updateUser = async (req, res) => {
 // ลบผู้ใช้
 export const deleteUser = (req, res) => {
   const { id } = req.params;
-  db.query('DELETE FROM Users WHERE user_id = ?', [id], (err, result) => {
+  db.query('DELETE FROM users WHERE user_id = ?', [id], (err, result) => {
     if (err) return res.status(500).json({ error: err });
     res.json({ message: 'User deleted' });
   });
@@ -219,7 +219,7 @@ export const loginUser = (req, res) => {
   
   // ดึงข้อมูลผู้ใช้พร้อม hashed password
   db.query(
-    'SELECT user_id, username, email, password, role, phone, address FROM Users WHERE email = ?',
+    'SELECT user_id, username, email, password, role, phone, address FROM users WHERE email = ?',
     [email],
     async (err, results) => {
       if (err) {
@@ -263,7 +263,7 @@ export const loginUser = (req, res) => {
 export const getUserAddress = (req, res) => {
   const { id } = req.params;
   db.query(
-    'SELECT user_id, username, address, phone FROM Users WHERE user_id = ?',
+    'SELECT user_id, username, address, phone FROM users WHERE user_id = ?',
     [id],
     (err, results) => {
       if (err) return res.status(500).json({ error: err });
@@ -283,7 +283,7 @@ export const updateUserAddress = (req, res) => {
   }
 
   db.query(
-    'UPDATE Users SET address = ? WHERE user_id = ?',
+    'UPDATE users SET address = ? WHERE user_id = ?',
     [address, id],
     (err, result) => {
       if (err) return res.status(500).json({ error: err });
@@ -316,7 +316,7 @@ export const changePassword = (req, res) => {
 
   // ตรวจสอบรหัสผ่านปัจจุบัน
   db.query(
-    'SELECT password FROM Users WHERE user_id = ?',
+    'SELECT password FROM users WHERE user_id = ?',
     [id],
     async (err, results) => {
       if (err) return res.status(500).json({ error: err });
@@ -340,7 +340,7 @@ export const changePassword = (req, res) => {
 
         // อัปเดตรหัสผ่านใหม่
         db.query(
-          'UPDATE Users SET password = ? WHERE user_id = ?',
+          'UPDATE users SET password = ? WHERE user_id = ?',
           [hashedNewPassword, id],
           (err, result) => {
             if (err) return res.status(500).json({ error: err });
@@ -368,7 +368,7 @@ export const verifyEmail = (req, res) => {
   }
 
   db.query(
-    'SELECT user_id, email FROM Users WHERE email = ?',
+    'SELECT user_id, email FROM users WHERE email = ?',
     [email],
     (err, results) => {
       if (err) {
@@ -399,7 +399,7 @@ export const verifyIdentity = (req, res) => {
   }
 
   db.query(
-    'SELECT user_id, username, phone FROM Users WHERE username = ? AND phone = ?',
+    'SELECT user_id, username, phone FROM users WHERE username = ? AND phone = ?',
     [username, phone],
     (err, results) => {
       if (err) {
@@ -439,7 +439,7 @@ export const resetPassword = async (req, res) => {
 
     // อัปเดตรหัสผ่านใหม่
     db.query(
-      'UPDATE Users SET password = ? WHERE user_id = ?',
+      'UPDATE users SET password = ? WHERE user_id = ?',
       [hashedPassword, user_id],
       (err, result) => {
         if (err) {
@@ -463,5 +463,6 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ error: 'Error resetting password' });
   }
 };
+
 
 
