@@ -31,6 +31,8 @@ export const getAllOrders = async (req, res) => {
 export const getOrderById = async (req, res) => {
   try {
     const { id } = req.params;
+    logger.info(`Getting order by ID: ${id}`);
+    
     const sql = `
       SELECT o.*, 
              u.username, 
@@ -40,14 +42,24 @@ export const getOrderById = async (req, res) => {
              COALESCE(o.phone, u.phone) as final_phone,
              COALESCE(o.delivery_address, u.address) as final_delivery_address
       FROM Orders o
-      JOIN Users u ON o.user_id = u.user_id
+      LEFT JOIN Users u ON o.user_id = u.user_id
       WHERE o.order_id = ?
     `;
     const [results] = await db.query(sql, [id]);
-    if (results.length === 0) return res.status(404).json({ message: "Order not found" });
+    logger.info(`Query result: ${results.length} order(s) found`);
+    
+    if (results.length === 0) {
+      logger.warn(`Order not found: ${id}`);
+      return res.status(404).json({ message: "Order not found", orderId: id });
+    }
     res.json(results[0]);
   } catch (err) {
-    res.status(500).json({ error: err });
+    logger.error(`Error getting order ${req.params.id}:`, err.message, err.stack);
+    res.status(500).json({ 
+      error: err.message, 
+      details: err.toString(),
+      sql: err.sql 
+    });
   }
 };
 
