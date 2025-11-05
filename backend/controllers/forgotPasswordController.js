@@ -12,6 +12,16 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.GMAIL_USER || 'oofoofgt36@gmail.com',
     pass: process.env.GMAIL_APP_PASSWORD || 'znwt xrue nyzr hvps'
+  },
+  // เพิ่ม timeout และ connection options
+  connectionTimeout: 10000, // 10 seconds
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
+  // ลอง TLS ก่อน ถ้าไม่ได้ค่อยใช้ plain
+  secure: false, // use TLS
+  requireTLS: true,
+  tls: {
+    rejectUnauthorized: false
   }
 });
 
@@ -98,8 +108,14 @@ export const sendOTP = async (req, res) => {
     const isDevelopment = process.env.NODE_ENV !== 'production';
     
     res.json({ 
-      message: 'ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ',
-      ...(isDevelopment && { debug_otp: otp, debug_email: email }) // แสดง OTP เฉพาะ dev mode
+      message: isDevelopment 
+        ? `ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว (หรือดู OTP ด้านล่าง)` 
+        : 'ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ',
+      // แสดง OTP เสมอใน dev mode (เพราะ Render อาจบล็อก SMTP)
+      debug_otp: isDevelopment ? otp : undefined,
+      debug_email: isDevelopment ? email : undefined,
+      // เพิ่มคำแนะนำ
+      note: isDevelopment ? 'หาก Gmail ไม่ได้รับอีเมล ให้ใช้ debug_otp ด้านบนแทน' : undefined
     });
 
   } catch (error) {

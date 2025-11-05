@@ -67,7 +67,16 @@ export class ForgotPasswordComponent {
         clearTimeout(timeoutId);
         this.isLoading = false;
         logger.info('OTP sent successfully:', response);
-        this.toastService.success('ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ');
+        
+        // แสดง debug OTP ถ้ามี (สำหรับกรณีที่ Gmail ไม่ทำงาน)
+        if (response.debug_otp) {
+          this.debugOTP = response.debug_otp;
+          logger.warn('🔐 DEBUG OTP:', response.debug_otp);
+          this.toastService.success(`✅ ${response.message}\n\n🔐 OTP ของคุณคือ: ${response.debug_otp}\n\n(หาก Gmail ไม่ได้รับ ให้ใช้ OTP นี้)`);
+        } else {
+          this.toastService.success('ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ');
+        }
+        
         this.step = 2;
       },
       error: (error) => {
