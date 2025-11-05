@@ -76,7 +76,10 @@ export const sendOTP = async (req, res) => {
         // ใช้ SendGrid Web API (ไม่ผ่าน SMTP)
         const msg = {
           to: email,
-          from: process.env.SENDGRID_FROM_EMAIL || 'oofoofgt36@gmail.com',
+          from: {
+            email: process.env.SENDGRID_FROM_EMAIL || 'oofoofgt36@gmail.com',
+            name: 'FreezeFood'
+          },
           subject: '🔐 รหัส OTP สำหรับรีเซ็ตรหัสผ่าน - FreezeFood',
           html: `
           <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px;">
