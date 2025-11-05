@@ -12,7 +12,7 @@ let transporter;
 
 if (process.env.SENDGRID_API_KEY) {
   // Production: ใช้ SendGrid API (แนะนำ!)
-  // ต้อง install: npm install @sendgrid/mail
+  console.log('✅ Using SendGrid SMTP with API Key:', process.env.SENDGRID_API_KEY.substring(0, 10) + '...');
   transporter = nodemailer.createTransport({
     host: 'smtp.sendgrid.net',
     port: 587,
@@ -22,6 +22,7 @@ if (process.env.SENDGRID_API_KEY) {
     }
   });
 } else {
+  console.log('⚠️ SENDGRID_API_KEY not found, using Gmail SMTP (may not work on Render)');
   // Development: ใช้ Gmail SMTP (อาจไม่ทำงานบน Render)
   transporter = nodemailer.createTransport({
     service: 'gmail',
