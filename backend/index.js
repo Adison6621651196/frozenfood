@@ -26,21 +26,28 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:4200',
   'https://localhost:4200',
-  process.env.FRONTEND_URL
-];
+  process.env.FRONTEND_URL,
+  'https://frozenfood-flame.vercel.app' // เพิ่ม Vercel URL
+].filter(Boolean); // กรองค่า undefined/null ออก
 
 app.use(cors({ 
   origin: function (origin, callback) {
     // อนุญาต requests ที่ไม่มี origin (เช่น Postman, mobile apps)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || !process.env.FRONTEND_URL) {
+    
+    // Log เพื่อ debug
+    logger.info(`CORS request from origin: ${origin}`);
+    
+    // ตรวจสอบว่า origin อยู่ใน allowedOrigins หรือไม่
+    if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      logger.error(`CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
