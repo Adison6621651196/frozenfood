@@ -1,44 +1,17 @@
 import db from '../config/database.js';
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
 // เก็บ OTP ชั่วคราวในหน่วยความจำ (สำหรับ demo - production ควรใช้ Redis หรือ Database)
 const otpStore = new Map();
 
-// สร้าง transporter สำหรับส่ง email
-// ⚠️ Render Free Tier บล็อก SMTP → ใช้ SendGrid API แทน
-let transporter;
-
+// ตั้งค่า SendGrid API Key
 if (process.env.SENDGRID_API_KEY) {
-  // Production: ใช้ SendGrid API (แนะนำ!)
-  console.log('✅ Using SendGrid SMTP with API Key:', process.env.SENDGRID_API_KEY.substring(0, 10) + '...');
-  transporter = nodemailer.createTransport({
-    host: 'smtp.sendgrid.net',
-    port: 587,
-    auth: {
-      user: 'apikey',
-      pass: process.env.SENDGRID_API_KEY
-    }
-  });
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('✅ SendGrid API Key configured:', process.env.SENDGRID_API_KEY.substring(0, 10) + '...');
 } else {
-  console.log('⚠️ SENDGRID_API_KEY not found, using Gmail SMTP (may not work on Render)');
-  // Development: ใช้ Gmail SMTP (อาจไม่ทำงานบน Render)
-  transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USER || 'oofoofgt36@gmail.com',
-      pass: process.env.GMAIL_APP_PASSWORD || 'payr fvyh gzwg eifq'
-    },
-    connectionTimeout: 5000,    // ลดเป็น 5 วินาที
-    greetingTimeout: 5000,      // ลดเป็น 5 วินาที
-    socketTimeout: 8000,        // ลดเป็น 8 วินาที
-    secure: false,
-    requireTLS: true,
-    tls: {
-      rejectUnauthorized: false
-    }
-  });
+  console.log('⚠️ SENDGRID_API_KEY not found');
 }
 
 // Step 1: ตรวจสอบอีเมลและส่ง OTP
@@ -100,9 +73,10 @@ export const sendOTP = async (req, res) => {
     // ใช้ setImmediate เพื่อให้ส่ง email แบบ async (ไม่บล็อก response)
     setImmediate(async () => {
       try {
-        await transporter.sendMail({
-          from: process.env.SENDGRID_FROM_EMAIL || 'oofoofgt36@gmail.com',
+        // ใช้ SendGrid Web API (ไม่ผ่าน SMTP)
+        const msg = {
           to: email,
+          from: process.env.SENDGRID_FROM_EMAIL || 'oofoofgt36@gmail.com',
           subject: '🔐 รหัส OTP สำหรับรีเซ็ตรหัสผ่าน - FreezeFood',
           html: `
           <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px;">
@@ -141,8 +115,10 @@ export const sendOTP = async (req, res) => {
             </div>
           </div>
         `
-        });
-        console.log(`✅ ส่ง OTP สำเร็จไปยัง ${email}`);
+        };
+        
+        await sgMail.send(msg);
+        console.log(`✅ ส่ง OTP สำเร็จไปยัง ${email} ผ่าน SendGrid Web API`);
       } catch (emailError) {
         console.error('❌ ส่ง email ไม่สำเร็จ:', emailError);
         console.error('❌ Email Error Details:', emailError.message);
