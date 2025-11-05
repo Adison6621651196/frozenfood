@@ -6,24 +6,39 @@ import crypto from 'crypto';
 // เก็บ OTP ชั่วคราวในหน่วยความจำ (สำหรับ demo - production ควรใช้ Redis หรือ Database)
 const otpStore = new Map();
 
-// สร้าง transporter สำหรับส่ง email (ใช้ Gmail - ฟรี)
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER || 'oofoofgt36@gmail.com',
-    pass: process.env.GMAIL_APP_PASSWORD || 'znwt xrue nyzr hvps'
-  },
-  // เพิ่ม timeout และ connection options
-  connectionTimeout: 10000, // 10 seconds
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
-  // ลอง TLS ก่อน ถ้าไม่ได้ค่อยใช้ plain
-  secure: false, // use TLS
-  requireTLS: true,
-  tls: {
-    rejectUnauthorized: false
-  }
-});
+// สร้าง transporter สำหรับส่ง email
+// ⚠️ Render Free Tier บล็อก SMTP → ใช้ SendGrid API แทน
+let transporter;
+
+if (process.env.SENDGRID_API_KEY) {
+  // Production: ใช้ SendGrid API (แนะนำ!)
+  // ต้อง install: npm install @sendgrid/mail
+  transporter = nodemailer.createTransport({
+    host: 'smtp.sendgrid.net',
+    port: 587,
+    auth: {
+      user: 'apikey',
+      pass: process.env.SENDGRID_API_KEY
+    }
+  });
+} else {
+  // Development: ใช้ Gmail SMTP (อาจไม่ทำงานบน Render)
+  transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER || 'oofoofgt36@gmail.com',
+      pass: process.env.GMAIL_APP_PASSWORD || 'znwt xrue nyzr hvps'
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
+    secure: false,
+    requireTLS: true,
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+}
 
 // Step 1: ตรวจสอบอีเมลและส่ง OTP
 export const sendOTP = async (req, res) => {
