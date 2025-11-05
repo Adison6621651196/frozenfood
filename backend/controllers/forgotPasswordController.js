@@ -28,11 +28,11 @@ if (process.env.SENDGRID_API_KEY) {
     service: 'gmail',
     auth: {
       user: process.env.GMAIL_USER || 'oofoofgt36@gmail.com',
-      pass: process.env.GMAIL_APP_PASSWORD || 'znwt xrue nyzr hvps'
+      pass: process.env.GMAIL_APP_PASSWORD || 'payr fvyh gzwg eifq'
     },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    connectionTimeout: 5000,    // ลดเป็น 5 วินาที
+    greetingTimeout: 5000,      // ลดเป็น 5 วินาที
+    socketTimeout: 8000,        // ลดเป็น 8 วินาที
     secure: false,
     requireTLS: true,
     tls: {
@@ -44,17 +44,26 @@ if (process.env.SENDGRID_API_KEY) {
 // Step 1: ตรวจสอบอีเมลและส่ง OTP
 export const sendOTP = async (req, res) => {
   try {
+    console.log('📥 Received sendOTP request:', req.body);
     const { email } = req.body;
 
     if (!email) {
+      console.log('❌ No email provided');
       return res.status(400).json({ message: 'กรุณากรอกอีเมล' });
     }
+    
+    console.log('📧 Processing OTP for email:', email);
 
     // ตรวจสอบว่ามีอีเมลนี้ในระบบหรือไม่
     const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
 
     if (users.length === 0) {
-      return res.status(404).json({ message: 'ไม่พบอีเมลนี้ในระบบ' });
+      // ⚠️ Development Mode: อนุญาตให้ส่ง OTP แม้อีเมลไม่อยู่ในระบบ (เพื่อทดสอบ)
+      const isDevelopment = process.env.NODE_ENV !== 'production';
+      if (!isDevelopment) {
+        return res.status(404).json({ message: 'ไม่พบอีเมลนี้ในระบบ' });
+      }
+      console.log(`⚠️ Development Mode: ส่ง OTP ไปยังอีเมลที่ไม่มีในระบบ: ${email}`);
     }
 
     // สร้าง OTP 6 หลัก
@@ -66,15 +75,36 @@ export const sendOTP = async (req, res) => {
       expiresAt: Date.now() + 5 * 60 * 1000 // 5 นาที
     });
 
-    // ส่ง OTP ไปยัง email จริง
+    // สำหรับ Development/Testing: แสดง OTP ใน response
+    // ⚠️ Production: ควรลบออก!
+    const isDevelopment = process.env.NODE_ENV !== 'production';
+    
+    console.log('✅ OTP created:', otp);
+    console.log('✅ Sending response to client...');
+    
+    // ส่ง response ทันทีก่อน ไม่รอ email (non-blocking)
+    res.json({ 
+      message: isDevelopment 
+        ? `ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว (หรือดู OTP ด้านล่าง)` 
+        : 'ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ',
+      // แสดง OTP เสมอใน dev mode (เพราะ Render อาจบล็อก SMTP)
+      debug_otp: isDevelopment ? otp : undefined,
+      debug_email: isDevelopment ? email : undefined,
+      // เพิ่มคำแนะนำ
+      note: isDevelopment ? 'หาก Gmail ไม่ได้รับอีเมล ให้ใช้ debug_otp ด้านบนแทน' : undefined
+    });
+
+    // ส่ง OTP ไปยัง email จริง (ทำแบบ background - ไม่บล็อก response)
     console.log(`📧 กำลังส่ง OTP ไปยัง ${email}: ${otp}`);
     
-    try {
-      await transporter.sendMail({
-        from: process.env.SENDGRID_FROM_EMAIL || 'oofoofgt36@gmail.com',
-        to: email,
-        subject: '🔐 รหัส OTP สำหรับรีเซ็ตรหัสผ่าน - FreezeFood',
-        html: `
+    // ใช้ setImmediate เพื่อให้ส่ง email แบบ async (ไม่บล็อก response)
+    setImmediate(async () => {
+      try {
+        await transporter.sendMail({
+          from: process.env.SENDGRID_FROM_EMAIL || 'oofoofgt36@gmail.com',
+          to: email,
+          subject: '🔐 รหัส OTP สำหรับรีเซ็ตรหัสผ่าน - FreezeFood',
+          html: `
           <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px;">
             <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
               <div style="text-align: center; margin-bottom: 30px;">
@@ -111,27 +141,16 @@ export const sendOTP = async (req, res) => {
             </div>
           </div>
         `
-      });
-      console.log(`✅ ส่ง OTP สำเร็จไปยัง ${email}`);
-    } catch (emailError) {
-      console.error('❌ ส่ง email ไม่สำเร็จ:', emailError);
-      console.error('❌ Email Error Details:', emailError.message);
-      // ถึงแม้ส่ง email ไม่สำเร็จ ก็ยังคงแสดง debug_otp เพื่อให้ระบบใช้งานได้
-    }
-
-    // สำหรับ Development/Testing: แสดง OTP ใน response
-    // ⚠️ Production: ควรลบออก!
-    const isDevelopment = process.env.NODE_ENV !== 'production';
-    
-    res.json({ 
-      message: isDevelopment 
-        ? `ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว (หรือดู OTP ด้านล่าง)` 
-        : 'ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ',
-      // แสดง OTP เสมอใน dev mode (เพราะ Render อาจบล็อก SMTP)
-      debug_otp: isDevelopment ? otp : undefined,
-      debug_email: isDevelopment ? email : undefined,
-      // เพิ่มคำแนะนำ
-      note: isDevelopment ? 'หาก Gmail ไม่ได้รับอีเมล ให้ใช้ debug_otp ด้านบนแทน' : undefined
+        });
+        console.log(`✅ ส่ง OTP สำเร็จไปยัง ${email}`);
+      } catch (emailError) {
+        console.error('❌ ส่ง email ไม่สำเร็จ:', emailError);
+        console.error('❌ Email Error Details:', emailError.message);
+        console.error('❌ Error Code:', emailError.code);
+        console.error('❌ Error Response:', emailError.response);
+        console.error('❌ Full Error:', JSON.stringify(emailError, null, 2));
+        // ถึงแม้ส่ง email ไม่สำเร็จ ก็ยังคงแสดง debug_otp เพื่อให้ระบบใช้งานได้
+      }
     });
 
   } catch (error) {

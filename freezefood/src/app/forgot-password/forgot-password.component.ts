@@ -54,17 +54,15 @@ export class ForgotPasswordComponent {
     logger.info('Sending OTP to:', this.email);
     logger.info('API URL:', `${this.apiUrl}/forgot-password/send-otp`);
 
-    // Set timeout 60 seconds (Render free tier needs time to wake up)
-    const timeoutId = setTimeout(() => {
-      this.isLoading = false;
-      this.toastService.error('การเชื่อมต่อใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้ง (Server อาจกำลังตื่น)');
-    }, 60000);
-
+    // ✅ ไปหน้า Step 2 ทันที (ไม่รอ API response)
+    this.toastService.info('กำลังส่ง OTP ไปยังอีเมลของคุณ...');
+    this.step = 2;
+    
+    // ส่ง API ในพื้นหลัง (background)
     this.http.post<any>(`${this.apiUrl}/forgot-password/send-otp`, {
       email: this.email
     }).subscribe({
       next: (response) => {
-        clearTimeout(timeoutId);
         this.isLoading = false;
         logger.info('OTP sent successfully:', response);
         
@@ -72,20 +70,23 @@ export class ForgotPasswordComponent {
         if (response.debug_otp) {
           this.debugOTP = response.debug_otp;
           logger.warn('🔐 DEBUG OTP:', response.debug_otp);
-          this.toastService.success(`✅ ${response.message}\n\n🔐 OTP ของคุณคือ: ${response.debug_otp}\n\n(หาก Gmail ไม่ได้รับ ให้ใช้ OTP นี้)`);
+          this.toastService.success(`✅ OTP ของคุณคือ: ${response.debug_otp}\n\n(หาก Gmail ไม่ได้รับ ให้ใช้ OTP นี้)`);
         } else {
-          this.toastService.success('ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว กรุณาตรวจสอบอีเมลของคุณ');
+          this.toastService.success('✅ ส่ง OTP ไปยังอีเมลเรียบร้อยแล้ว');
         }
-        
-        this.step = 2;
       },
       error: (error) => {
-        clearTimeout(timeoutId);
         this.isLoading = false;
         logger.error('Send OTP error:', error);
-        this.toastService.error(error.error?.message || 'เกิดข้อผิดพลาดในการส่ง OTP');
+        // ไม่แสดง error เพราะอยู่หน้า Step 2 แล้ว แค่ log ไว้
+        logger.warn('อีเมลอาจไม่ได้รับ OTP แต่สามารถใช้ debug_otp ได้');
       }
     });
+    
+    // ปิด loading หลัง 2 วินาที
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 2000);
   }
 
   // Step 2: ตรวจสอบ OTP
