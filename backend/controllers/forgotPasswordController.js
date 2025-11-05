@@ -80,18 +80,17 @@ export const sendOTP = async (req, res) => {
             email: process.env.SENDGRID_FROM_EMAIL || 'oofoofgt36@gmail.com',
             name: 'FreezeFood'
           },
-          subject: '🔐 รหัส OTP สำหรับรีเซ็ตรหัสผ่าน - FreezeFood',
+          subject: 'รหัสยืนยันตัวตนสำหรับรีเซ็ตรหัสผ่าน - FreezeFood',
           html: `
           <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px;">
             <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
               <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="color: #667eea; margin: 0; font-size: 28px;">🔐 รีเซ็ตรหัสผ่าน</h1>
-                <p style="color: #666; margin-top: 10px;">FreezeFood - ระบบอาหารแช่แข็ง</p>
+                <h1 style="color: #667eea; margin: 0; font-size: 28px;">รีเซ็ตรหัสผ่าน</h1>
+                <p style="color: #666; margin-top: 10px;">FreezeFood - ระบบจัดการอาหารแช่แข็ง</p>
               </div>
               
-              <p style="color: #333; font-size: 16px; line-height: 1.6;">สวัสดีค่ะ</p>
-              <p style="color: #333; font-size: 16px; line-height: 1.6;">คุณได้ทำการขอรีเซ็ตรหัสผ่านสำหรับบัญชี FreezeFood</p>
-              <p style="color: #333; font-size: 16px; line-height: 1.6; font-weight: 600;">กรุณาใช้รหัส OTP ด้านล่างเพื่อยืนยันตัวตน:</p>
+              <p style="color: #333; font-size: 16px; line-height: 1.6;">เรียน ลูกค้าที่เคารพ</p>
+              <p style="color: #333; font-size: 16px; line-height: 1.6;">คุณได้ทำการขอรีเซ็ตรหัสผ่านสำหรับบัญชี FreezeFood กรุณาใช้รหัสยืนยันตัวตนด้านล่างนี้:</p>
               
               <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; text-align: center; border-radius: 8px; margin: 30px 0;">
                 <div style="background: white; padding: 15px; border-radius: 8px; display: inline-block;">
@@ -101,13 +100,13 @@ export const sendOTP = async (req, res) => {
               
               <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 5px; margin: 20px 0;">
                 <p style="margin: 0; color: #856404; font-size: 14px;">
-                  <strong>⚠️ สำคัญ:</strong> รหัส OTP นี้จะหมดอายุภายใน <strong>5 นาที</strong>
+                  <strong>หมายเหตุ:</strong> รหัสนี้มีอายุใช้งาน 5 นาที
                 </p>
               </div>
               
               <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; border-radius: 5px; margin: 20px 0;">
                 <p style="margin: 0; color: #721c24; font-size: 14px;">
-                  <strong>🔒 เพื่อความปลอดภัย:</strong> หากคุณไม่ได้ทำการขอรีเซ็ตรหัสผ่าน กรุณาเพิกเฉยต่ออีเมลนี้และอย่าแชร์รหัส OTP กับผู้อื่น
+                  <strong>ข้อควรระวัง:</strong> หากท่านไม่ได้ทำการขอรีเซ็ตรหัสผ่าน กรุณาละเว้นอีเมลนี้ และไม่ควรแชร์รหัสยืนยันกับบุคคลอื่น
                 </p>
               </div>
               
