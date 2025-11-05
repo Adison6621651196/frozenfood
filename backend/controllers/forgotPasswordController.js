@@ -70,7 +70,7 @@ export const sendOTP = async (req, res) => {
     
     try {
       await transporter.sendMail({
-        from: process.env.SENDGRID_FROM_EMAIL || 'FreezeFood <oofoofgt36@gmail.com>',
+        from: process.env.SENDGRID_FROM_EMAIL || 'oofoofgt36@gmail.com',
         to: email,
         subject: '🔐 รหัส OTP สำหรับรีเซ็ตรหัสผ่าน - FreezeFood',
         html: `
