@@ -76,6 +76,30 @@ app.use('/image', express.static('image'));
 app.use('/uploads', express.static('uploads'));
 
 // ============================================
+// Health Check Endpoint (สำหรับ Cron Job ping)
+// ============================================
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    message: 'Server is running' 
+  });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'FreezeFood API Server',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      api: '/api'
+    }
+  });
+});
+
+// ============================================
 // API Routes
 // ============================================
 // เชื่อมต่อทุก API endpoints ที่อยู่ในไฟล์ routes/api.js
