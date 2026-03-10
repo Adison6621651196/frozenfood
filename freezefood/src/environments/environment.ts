@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://freezefood-backend.onrender.com/api'  // ใช้ Backend จาก Render
+  apiUrl: 'http://localhost:3000/api'  // ใช้ Backend จาก localhost สำหรับการพัฒนา
 };

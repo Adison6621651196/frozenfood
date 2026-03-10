@@ -25,6 +25,7 @@ const app = express();
 // อนุญาตให้ Frontend (Angular) เรียกใช้ API ได้ทั้ง localhost และ production
 const allowedOrigins = [
   'http://localhost:4200',
+  'http://localhost:60000',
   'https://localhost:4200',
   process.env.FRONTEND_URL,
   'https://frozenfood-flame.vercel.app' // เพิ่ม Vercel URL
